@@ -1,0 +1,5 @@
+*.tar
+images 
+.venv
+redis_data
+ftp_data

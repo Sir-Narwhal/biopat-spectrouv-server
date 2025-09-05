@@ -1,0 +1,75 @@
+services: 
+
+  # ftpserver: 
+  #   image: ftpserver 
+
+  #   ports:
+  #     - "21:21"
+  #     - "30000-30009:30000-30009"
+
+  #   environment: 
+  #     USERNAME: "SpectroFlowUV_001" 
+  #     PSWD: "etb425" 
+  #     ADDRESS: "0.0.0.0"
+  #     PORT: 21
+  #     FOLDERNAME: "spectral_data"
+    
+  #   volumes: 
+  #     - ./ftp_data:/spectral_data
+
+  #   depends_on:
+  #     - redisserver
+
+  #   restart: always
+    
+
+  ftpmanager: 
+    image: filemanager
+
+    environment: 
+      REDIS_IP_ADDRESS: redisserver
+      REDIS_PORT_NUMBER: 6379
+      FTP_ADDRESS: "192.168.0.180" 
+      FTP_PORT: 21
+      FTP_NAME: "SpectroFlowUV_001"
+      FTP_PSWD: "etb425"
+      FTP_FOLDERNAME: "server_data"
+    
+    depends_on: 
+      - redisserver 
+
+    # restart: always
+    
+  opcua_server: 
+    image: opcserver 
+
+    ports: 
+      - "4841:4841"
+
+    environment: 
+      OPC_IP_ADDRESS: "0.0.0.0" 
+      OPC_PORT_NUMBER: 4841
+      REDIS_IP_ADDRESS: redisserver
+      REDIS_PORT_NUMBER: 6379
+
+    depends_on:
+      - redisserver
+   
+    restart: always
+
+  redisserver: 
+    image: redis
+    
+    command: redis-server --bind 0.0.0.0 --appendonly yes
+
+    ports: 
+      - "6379:6379"
+    
+    volumes: 
+      - ./redis_data:/redis_data
+    
+    restart: always
+
+volumes:
+  redis_data:
+  ftp_data: 
