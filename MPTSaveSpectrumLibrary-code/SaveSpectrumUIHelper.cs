@@ -217,7 +217,116 @@ namespace MPTSaveSpectrumLibrary
 
         }
 
-        
+        /// <summary>
+        /// This method will stop monitoring then measurement.
+        /// </summary>
+        public static void StopMonitoringMeasurement()
+        {
+            AutomationElement parentElement = GetProgramElement();
+
+            // Start Measurement
+            AutomationElement measurementMenu = parentElement.FindFirst(TreeScope.Descendants,
+                new AndCondition(
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem),
+                    new PropertyCondition(AutomationElement.NameProperty, "Measurement")
+                    )
+                );
+
+            if (measurementMenu == null)
+            {
+                Console.WriteLine("Measurement menu not found.");
+                return;
+            }
+
+
+            var supportedPatterns = measurementMenu.GetSupportedPatterns();
+            foreach (var p in supportedPatterns)
+            {
+                Console.WriteLine("Supported pattern: " + p.ProgrammaticName);
+            }
+
+
+            if (measurementMenu.TryGetCurrentPattern(ExpandCollapsePattern.Pattern, out object expandObj))
+            {
+                var expandPattern = (ExpandCollapsePattern)expandObj;
+                expandPattern.Expand();
+
+                if (expandPattern.Current.ExpandCollapseState == ExpandCollapseState.Collapsed)
+                {
+                    expandPattern.Expand();
+                    System.Threading.Thread.Sleep(500);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Non-Expandable Measurement Menu.");
+            }
+
+            AutomationElement stopMeasurement = measurementMenu.FindFirst(TreeScope.Descendants,
+                new AndCondition(
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem),
+                    new PropertyCondition(AutomationElement.NameProperty, "Stop Measurement")
+                    )
+                );
+
+            if (stopMeasurement == null)
+            {
+                Console.WriteLine("Start Measurement menu item not found.");
+                return;
+            }
+
+            if (stopMeasurement.TryGetCurrentPattern(InvokePattern.Pattern, out object stopMeasurementObj))
+            {
+                var stopMeasurementPattern = (InvokePattern)stopMeasurementObj;
+                stopMeasurementPattern.Invoke();
+
+                Console.WriteLine("Started Measurement Invoked");
+
+            }
+            else
+            {
+                Console.WriteLine("Start Measurement Not Found");
+            }
+
+
+            // Start Monitoring Button 
+            var buttons = parentElement.FindAll(TreeScope.Descendants,
+                new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
+
+            foreach (AutomationElement button in buttons)
+            {
+
+                var descendants = button.FindAll(TreeScope.Descendants,
+                    Condition.TrueCondition);
+
+                foreach (AutomationElement child in descendants)
+                {
+                    string name = child.Current.Name;
+                    if (name == "Stop Monitor")
+                    {
+
+                        // Found the matching button!
+                        Console.WriteLine("Found button with matching child.");
+
+                        if (button.TryGetCurrentPattern(InvokePattern.Pattern, out object invokePatternObj))
+                        {
+                            var invokePattern = (InvokePattern)invokePatternObj;
+                            invokePattern.Invoke();
+                            Console.WriteLine("Button invoked.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Button is not invokable.");
+                        }
+
+                        return;
+                    }
+                }
+            }
+
+        }
+
+
         /// <summary>
         /// Terminates the spectroscopy program and restarts it after a short delay.
         /// </summary>

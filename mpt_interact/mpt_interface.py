@@ -15,15 +15,19 @@ import time
 import traceback 
 import psutil
 import gc 
+import logging
 
 import clr 
 
-sys.path.append(os.path.abspath(r'.\cslibraries'))
+# sys.path.append(os.path.abspath(r'.\cslibraries'))
+sys.path.append(os.path.abspath(f'.\\cslibraries\\'))
 
-clr.AddReference("MPTSaveSpectrumLibrary")
+clr.AddReference(os.path.abspath(f".\\cslibraries\\MPTSaveSpectrumLibrary.dll"))
 
 from MPTSaveSpectrumLibrary import SaveSpectrumUIHelper
 from MPTSaveSpectrumLibrary import WindowForceCloser
+# from MPTSaveSpectrumLibrary import StartMonitoringMeasurement
+# from MPTSaveSpectrumLibrary import StopMonitoringMeasurement
 
 
 class MPTInterface(): 
@@ -40,7 +44,7 @@ class MPTInterface():
     
     '''
 
-    def __init__(self, debug_logger, **kwargs): 
+    def __init__(self, mpt_app: SaveSpectrumUIHelper, **kwargs): 
         '''
         Method:                 MPTIterface.__init__ 
 
@@ -49,8 +53,9 @@ class MPTInterface():
         Initialization method for class MPTItnerface. Essential attributes are defined here without need for 
             specification by the user. 
         '''
-        self.debug_logger = debug_logger
-        self.start()
+        # logging = debug_logger
+        self.mpt_app = mpt_app 
+        # self.start()
         
     def start(self):
         '''
@@ -63,8 +68,8 @@ class MPTInterface():
 
         '''
 
-        self.ready = SaveSpectrumUIHelper.StartProgram()
-        self.pid = SaveSpectrumUIHelper.GetProgramId()
+        self.ready = self.mpt_app.StartProgram()
+        self.pid = self.mpt_app.GetProgramId()
         self.retries = 10
         
         counter = 0 
@@ -72,23 +77,23 @@ class MPTInterface():
         while self.ready != True: 
             # Do something 
             try: 
-                SaveSpectrumUIHelper.ConnectDevice(self.pid) 
+                self.mpt_app.ConnectDevice(self.pid) 
                 time.sleep(5) 
             except: 
                 time.sleep(2) 
                 counter += 1
 
-            self.ready = SaveSpectrumUIHelper.IsReady(self.pid) 
+            self.ready = self.mpt_app.IsReady(self.pid) 
             print(f"Program is not ready") 
-            self.debug_logger.warning(f"Program is not ready")
+            logging.warning(f"Program is not ready")
 
             if counter > self.retries:
                 print(f"Program cannot get to ready state after {self.retries} tries")
-                self.debug_logger.warning(f"Program cannot get to ready state after {self.retries} tries. Restarting Program")
+                logging.warning(f"Program cannot get to ready state after {self.retries} tries. Restarting Program")
 
-                SaveSpectrumUIHelper.RestartProgram()
-                self.ready = SaveSpectrumUIHelper.StartProgram()
-                self.pid = SaveSpectrumUIHelper.GetProgramId()
+                self.mpt_app.RestartProgram()
+                self.ready = self.mpt_app.StartProgram()
+                self.pid = self.mpt_app.GetProgramId()
 
                 counter = 0
 
@@ -105,7 +110,7 @@ class MPTInterface():
 
         '''
         
-        SaveSpectrumUIHelper.RestartProgram()
+        self.mpt_app.RestartProgram()
 
     # def 
     
@@ -122,11 +127,11 @@ class MPTInterface():
 
         try: 
             WindowForceCloser.ForceCloseSaveAsDialogs() 
-            SaveSpectrumUIHelper.FillSaveAsDialog(self.pid, savename)
+            self.mpt_app.FillSaveAsDialog(self.pid, savename)
         except Exception as e: 
             print(f"Python caught exception from c# .dll:\t{e}")
             print(traceback.format_exc())
-            self.debug_logger.error(f"Python caught exception from c# .dll:\t{e}")
+            logging.error(f"Python caught exception from c# .dll:\t{e}")
         # try: 
         #     # SaveSpectrumUIHelper.ClickControl(self.pid, "automationid", "ExportButton")
         #     # savename = os.path.join(os.path.abspath(filedir), filename)
@@ -149,18 +154,33 @@ class MPTInterface():
             
         '''
         gc.collect() 
-        SaveSpectrumUIHelper.ForceGC() 
+        self.mpt_app.ForceGC() 
         
+    def stop_monitor(self): 
+        self.mpt_app.StopMonitoringMeasurement()
 
+    def start_monitor(self): 
+        self.mpt_app.StartMonitoringMeasurement()
+
+    def refresh(self): 
+        self.mpt_app.stop_monitor() 
+        self.mpt_app.start_monitor()
+
+
+def test_refresh(): 
+    x = SaveSpectrumUIHelper()
+    x.StopMonitoringMeasurement() 
+    x.StartMonitoringMeasurement() 
 
 def test_spectrum_time(): 
-    x = MPTInterface() 
+    # x = MPTInterface() 
 
     times = [] 
     # while True: 
     for loop in range(50): 
         starttime = time.time() 
-        x.savespectrum(os.path.abspath(os.path.join("temp_data", "helloworld.txt"))) 
+        test_refresh()
+        # x.savespectrum(os.path.abspath(os.path.join("temp_data", "helloworld.txt"))) 
         endtime = time.time() - starttime
         times.append(endtime) 
 

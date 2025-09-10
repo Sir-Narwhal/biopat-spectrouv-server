@@ -1,0 +1,7 @@
+C:\Users\joelb\repos\biopat-spectrouv-server-1\library\debug\MPTSaveSpectrumLibrary.dll
+C:\Users\joelb\repos\biopat-spectrouv-server-1\library\debug\MPTSaveSpectrumLibrary.pdb
+C:\Users\joelb\repos\biopat-spectrouv-server-1\library\debug\MPTSaveSpectrumLibrary.xml
+C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTSaveSpectrumLibrary\obj\Debug\MPTSaveSpectrumLibrary.csproj.AssemblyReference.cache
+C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTSaveSpectrumLibrary\obj\Debug\MPTSaveSpectrumLibrary.csproj.CoreCompileInputs.cache
+C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTSaveSpectrumLibrary\obj\Debug\MPTSaveSpectrumLibrary.dll
+C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTSaveSpectrumLibrary\obj\Debug\MPTSaveSpectrumLibrary.pdb

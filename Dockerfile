@@ -1,4 +1,4 @@
-FROM python:3 AS filemanager
+FROM python: 3 AS filemanager
 
 WORKDIR /app
 

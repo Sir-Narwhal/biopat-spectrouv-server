@@ -34,6 +34,11 @@
             </summary>
             <param></param>
         </member>
+        <member name="M:MPTSaveSpectrumLibrary.SaveSpectrumUIHelper.StopMonitoringMeasurement">
+            <summary>
+            This method will stop monitoring then measurement.
+            </summary>
+        </member>
         <member name="M:MPTSaveSpectrumLibrary.SaveSpectrumUIHelper.RestartProgram">
             <summary>
             Terminates the spectroscopy program and restarts it after a short delay.
