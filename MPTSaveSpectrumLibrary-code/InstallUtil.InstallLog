@@ -1,0 +1,80 @@
+﻿
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+The Install phase completed successfully, and the Commit phase is beginning.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+The Commit phase completed successfully.
+
+The transacted install has completed.
+
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+An exception occurred during the Install phase.
+System.ComponentModel.Win32Exception: The specified service already exists
+
+The Rollback phase of the installation is beginning.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+The Rollback phase completed successfully.
+
+The transacted install has completed.
+
+
+The uninstall is beginning.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+The uninstall has completed.
+
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+The Install phase completed successfully, and the Commit phase is beginning.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+The Commit phase completed successfully.
+
+The transacted install has completed.
+
+
+The uninstall is beginning.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+The uninstall has completed.
+
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+The Install phase completed successfully, and the Commit phase is beginning.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+The Commit phase completed successfully.
+
+The transacted install has completed.
+
+
+The uninstall is beginning.
+See the contents of the log file for the C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.exe assembly's progress.
+The file is located at C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTControlService\bin\Release\MPTControlService.InstallLog.
+
+The uninstall has completed.

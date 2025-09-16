@@ -28,6 +28,12 @@
             <param></param>
             <returns>name=parentElement</returns>
         </member>
+        <member name="M:MPTSaveSpectrumLibrary.SaveSpectrumUIHelper.StartConnectMonitor">
+            <summary>
+            StartConnectMonitor: 
+            Starts the connection and ensures it's connection. Legacy version is MPTInterface class in python. 
+            </summary>
+        </member>
         <member name="M:MPTSaveSpectrumLibrary.SaveSpectrumUIHelper.StartMonitoringMeasurement">
             <summary>
             Monitors the measurement process in the spectroscopy application.

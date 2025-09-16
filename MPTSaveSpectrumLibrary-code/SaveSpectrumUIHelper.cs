@@ -13,6 +13,7 @@ using System.Windows.Automation;
 using System.Linq.Expressions;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using System.Runtime.InteropServices;
+using System.Xml.Schema;
 
 namespace MPTSaveSpectrumLibrary
 
@@ -20,7 +21,7 @@ namespace MPTSaveSpectrumLibrary
     /// <summary>
     /// Provides UI automation methods for launching and interacting with the Tec5.MPT.Shell spectroscopy application.
     /// </summary>
-    public class SaveSpectrumUIHelper
+    public static class SaveSpectrumUIHelper
     {
 
         /// <summary>
@@ -30,23 +31,42 @@ namespace MPTSaveSpectrumLibrary
         // This method starts the program for Spectroscopy Measurments and will return PID of the program
         public static bool StartProgram()
         {
+            Console.WriteLine("Program attempting to start...");
+
             try
             {
-                while (IsProgramRunning("Tec5.MPT.Shell") is false)
+                while (!IsProgramRunning("Tec5.MPT.Shell"))
                 {
+                    Console.WriteLine("Program is NOT running, so all clear to start program...");
+
                     Process process = Process.Start("C:\\Program Files (x86)\\tec5\\tecSaaS MPT\\Tec5.MPT.Shell.exe");
 
-                    //System.Threading.Thread.Sleep(2000);
+                    Console.WriteLine("Program is POTENTIONALLY running, getting PID...");
+
+                    Thread.Sleep(5000);
 
                     if (process != null)
                     {
                         int pid = process.Id;
                         //return pid;
-                        IsReady(pid);
+                        ConnectDevice(pid);
+                        Thread.Sleep(2000); 
+
+                        Console.WriteLine($"Program Starting was successful... {pid}");
+                        return IsReady(pid);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Program Starting was unscessful..."); 
                     }
                 }
-
+                    
                 Process[] processes = Process.GetProcessesByName("Tec5.MPT.Shell");
+
+                if (processes.Length == 0 | processes[0] is null)
+                {
+                    return false; 
+                }
 
                 ConnectDevice(processes[0].Id);
 
@@ -108,12 +128,73 @@ namespace MPTSaveSpectrumLibrary
         }
 
         /// <summary>
+        /// StartConnectMonitor: 
+        /// Starts the connection and ensures it's connection. Legacy version is MPTInterface class in python. 
+        /// </summary>
+        public static async Task StartConnectMonitor()
+        {
+            bool mptReady = StartProgram();
+
+            await Task.Delay(8000); 
+
+            Console.WriteLine($"mptReady in StartConnectMonitor is... {mptReady}");
+
+
+            int pid = GetProgramId();
+
+            Console.WriteLine($"pid is ... {pid}"); 
+
+            await Task.Delay(2000); 
+
+            int maxIter = 10;
+            int countIter = 0; 
+
+            while (mptReady)
+            {
+                try
+                {
+                    ConnectDevice(pid);
+                    await Task.Delay(5000); 
+                }
+                catch (Exception ex)
+                {
+                    await Task.Delay(5000); 
+                    countIter++;
+
+                    Console.WriteLine($"Error Experienced: {ex}");
+                }
+
+                mptReady = IsReady(pid);
+                
+                if (countIter >= maxIter)
+                {
+                    RestartProgram();
+                    await Task.Delay(15000);
+
+                    mptReady = StartProgram();
+                    await Task.Delay(8000);
+
+                    pid = GetProgramId();
+                    await Task.Delay(8000);
+
+                    countIter = 0;
+                }
+            }
+        }
+
+        /// <summary>
         /// Monitors the measurement process in the spectroscopy application.
         /// </summary>
         /// <param></param>
         public static void StartMonitoringMeasurement()
         {
             AutomationElement parentElement = GetProgramElement();
+
+            if (parentElement is null)
+            {
+                Console.WriteLine($"parent element is null");
+                return;
+            }
 
             // Start Measurement
             AutomationElement measurementMenu = parentElement.FindFirst(TreeScope.Descendants,
@@ -199,7 +280,9 @@ namespace MPTSaveSpectrumLibrary
                         // Found the matching button!
                         Console.WriteLine("Found button with matching child.");
 
-                        if (button.TryGetCurrentPattern(InvokePattern.Pattern, out object invokePatternObj))
+                        bool buttonIsEnabled = button.Current.IsEnabled; 
+
+                        if (button.TryGetCurrentPattern(InvokePattern.Pattern, out object invokePatternObj) & buttonIsEnabled)
                         {
                             var invokePattern = (InvokePattern)invokePatternObj;
                             invokePattern.Invoke();
@@ -223,6 +306,12 @@ namespace MPTSaveSpectrumLibrary
         public static void StopMonitoringMeasurement()
         {
             AutomationElement parentElement = GetProgramElement();
+
+            if (parentElement is null)
+            {
+                Console.WriteLine($"Parent Element is null");
+                return; 
+            }
 
             // Start Measurement
             AutomationElement measurementMenu = parentElement.FindFirst(TreeScope.Descendants,
@@ -415,6 +504,7 @@ namespace MPTSaveSpectrumLibrary
         {
             try
             {
+                Console.WriteLine($"parentElementId is {parentElementId}"); 
                 AutomationElement parentElement = AutomationElement.RootElement.FindFirst(
                      TreeScope.Children,
                      new PropertyCondition(AutomationElement.ProcessIdProperty, parentElementId)
@@ -490,6 +580,7 @@ namespace MPTSaveSpectrumLibrary
                 throw new Exception("Main application window not found.");
 
             ClickConnectButton(parentElement);
+            Thread.Sleep(1000); 
 
             //SendKeys.SendWait("{Enter}");
             ConnectToDeviceWindow(parentElement); 
@@ -500,7 +591,7 @@ namespace MPTSaveSpectrumLibrary
             Thread.Sleep(100);
 
             FindLoginWindow("user");
-            Thread.Sleep(100);
+            Thread.Sleep(2000);
             //SendKeys.SendWait("{Enter}");
 
             StartMonitoringMeasurement();

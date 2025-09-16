@@ -20,9 +20,23 @@ import logging
 import clr 
 
 # sys.path.append(os.path.abspath(r'.\cslibraries'))
-sys.path.append(os.path.abspath(f'.\\cslibraries\\'))
+# sys.path.append(os.path.abspath(f'.\\cslibraries\\'))
 
-clr.AddReference(os.path.abspath(f".\\cslibraries\\MPTSaveSpectrumLibrary.dll"))
+# clr.AddReference(os.path.abspath(f".\\cslibraries\\MPTSaveSpectrumLibrary.dll"))
+# sys.path.append('.')
+# clr.AddReference(r".\MPTSaveSpectrumLibrary.dll")
+# clr.AddReference("MPTSaveSpectrumLibrary.dll")
+
+def resource_path(filename:str) -> str: 
+    if getattr(sys, 'frozen', False): 
+        base_file = sys._MEIPASS
+    else:    
+        base_file = os.path.abspath(r".\cslibraries")
+    return os.path.join(base_file, filename)
+
+dll_path = resource_path("MPTSaveSpectrumLibrary.dll")
+clr.AddReference(dll_path)
+
 
 from MPTSaveSpectrumLibrary import SaveSpectrumUIHelper
 from MPTSaveSpectrumLibrary import WindowForceCloser

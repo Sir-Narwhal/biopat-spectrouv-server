@@ -8,9 +8,20 @@ from typing import List
 from redis import Redis, RedisError, ConnectionError, DataError 
 from mpt_interact.mpt_interface import MPTInterface
 
-sys.path.append(r'.\cslibraries')
-clr.AddReference(os.path.abspath(r".\cslibraries\MPTSaveSpectrumLibrary.dll"))
- 
+# sys.path.append(r'.\cslibraries')
+# clr.AddReference(os.path.abspath(r".\cslibraries\MPTSaveSpectrumLibrary.dll"))
+
+def resource_path(filename:str) -> str: 
+    if getattr(sys, 'frozen', False): 
+        base_file = sys._MEIPASS
+    else:    
+        base_file = os.path.abspath(r".\cslibraries")
+    return os.path.join(base_file, filename)
+
+dll_path = resource_path("MPTSaveSpectrumLibrary.dll")
+clr.AddReference(dll_path) 
+# clr.AddReference(r".\cslibraries\MPTSaveSpectrumLibrary.dll")
+
 from MPTSaveSpectrumLibrary import SaveSpectrumUIHelper
 
 '''

@@ -8,3 +8,4 @@ C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTSaveSpectrumLibrary-code\obj\R
 C:\Users\joelb\repos\biopat-spectrouv-server-1\cslibraries\MPTSaveSpectrumLibrary.dll
 C:\Users\joelb\repos\biopat-spectrouv-server-1\cslibraries\MPTSaveSpectrumLibrary.pdb
 C:\Users\joelb\repos\biopat-spectrouv-server-1\cslibraries\MPTSaveSpectrumLibrary.xml
+C:\Users\joelb\repos\biopat-spectrouv-server-1\MPTSaveSpectrumLibrary-code\obj\Release\MPTSaveS.DCD5F603.Up2Date
