@@ -1,4 +1,4 @@
-FROM python: 3 AS filemanager
+FROM python:3 AS filemanager
 
 WORKDIR /app
 
@@ -7,9 +7,9 @@ RUN pip install --no-cache -r requirements.txt
 
 COPY . . 
 
-CMD ["python", "./parselibrary/ftp_filemanagement.py"]
+CMD ["python", "./parselibrary/ftp_findnew.py"]
 
-FROM python:3 AS opcserver
+FROM python:3.13-alpine AS opcserver
 
 WORKDIR /app
 
