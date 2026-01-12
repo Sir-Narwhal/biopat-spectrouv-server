@@ -36,7 +36,7 @@ async def opcua_loop(redis_server):
 
     
     datatype_list = ['transmission', 'absorbance', 'onlinereference', 'sample', 'calibration']
-    wavelengths = [190.0 + i for i in range(202)]
+    wavelengths = [190.0 + i for i in range(201)]
 
     val_nodes_dict = {}
 
@@ -62,8 +62,8 @@ async def opcua_loop(redis_server):
                         elif "channel_2" in key: 
                             node = val_nodes_dict['channel_2'][datatype] 
                         else: 
-                            logging.fatal(f"NO Channel DATA found in REDIS!") 
-                            raise Exception(f"NO Channel DATA found in REDIS!")
+                            logging.warning(f"NO Channel DATA found in REDIS!") 
+                            raise Exception(f"REDIS: NO key '{key}' found")
                         await node.write_value(data) 
                         
             except Exception as ex:
