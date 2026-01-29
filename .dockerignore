@@ -1,3 +1,14 @@
 images/ 
 DockerFile
 compose.yaml 
+
+MPTControlService
+MPTHelpApplication-Installer
+MPTSaveSpectrumLibrary-code
+MPTTrayApplication
+mpt_interact
+
+cslibraries
+refresh_mpt.spec 
+README.md
+
