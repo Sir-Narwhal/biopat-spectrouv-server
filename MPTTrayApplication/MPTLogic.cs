@@ -73,9 +73,9 @@ namespace MPTTrayApplication
 
                     Console.WriteLine("Refresh sucessful");  
 
-                    RedisManager.SetString($"{mptRefresh}_state", Convert.ToString(refreshBool));
-                    RedisManager.SetString($"{mptStart}_state", Convert.ToString(!refreshBool));
-                    RedisManager.SetString($"{mptStop}_state", Convert.ToString(refreshBool));
+                    RedisManager.SetString($"{mptRefresh}_state", Convert.ToString(!refreshBool));
+                    RedisManager.SetString($"{mptStart}_state", Convert.ToString(refreshBool));
+                    RedisManager.SetString($"{mptStop}_state", Convert.ToString(!refreshBool));
                     RedisManager.SetString($"{mptRefresh}", Convert.ToString(!refreshBool));
                 }
             }

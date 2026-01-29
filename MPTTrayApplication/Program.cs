@@ -191,7 +191,7 @@ namespace MPTTrayApplication
                         trayIcon.Text = $"Status: Error";
                         if (statusItem != null)
                             statusItem.Text = $"Status: {ex.Message}";
-                    }, null);
+                    }, null); 
                 }
 
                 await Task.Delay(1000, token); // poll every second
