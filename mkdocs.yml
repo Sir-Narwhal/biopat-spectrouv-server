@@ -1,0 +1,51 @@
+site_name: BioPal SpectraUV Documentation
+site_description: Documentation for the BioPal SpectraUV spectroscopy data acquisition system
+site_author: Joel Baarbe
+
+repo_url: https://github.com/Sir-Narwhal/biopat-spectrouv-server-1
+repo_name: biopat-spectrouv-server-1
+
+theme:
+  name: material
+  palette:
+    scheme: default
+    primary: blue
+    accent: blue
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - search.suggest
+    - search.highlight
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - toc.integrate
+
+plugins:
+  - search:
+      lang: en
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Setup & Installation: setup.md
+  - Quick Start: quickstart.md
+  - User Guide: guide.md
+  - API Reference:
+    - Spectral Parser: api/parsing-spectra.md
+    - OPC UA Server: api/opcua-server.md
+  - Troubleshooting: troubleshooting.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      use_pygments: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tasklist
+  - pymdownx.emoji
+  - toc:
+      permalink: true
+  - attr_list
+  - md_in_html
