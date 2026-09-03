@@ -4,6 +4,7 @@
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
 [![Docker: Ready](https://img.shields.io/badge/Docker-Compose-blue.svg)](compose.yaml)
 [![Protocol: OPC UA](https://img.shields.io/badge/Protocol-OPC%20UA-orange.svg)](https://opcfoundation.org/)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0002--4391--135X-%23A6CE39?logo=orcid)](https://orcid.org/0009-0002-4391-135X)
 
 **Real-Time 201-Wavelength UV-Vis Spectroscopy Ingestion & OPC UA Industrial Gateway for Sartorius BioPAT® Spectro UV / tec5 Spectrometers.**
 
@@ -11,7 +12,7 @@
 
 ## Overview
 
-In modern bioprocess monitoring and Process Analytical Technology (PAT), standard spectroscopic integrations frequently limit operators to streaming only 1 to 4 discrete, hardcoded wavelengths into their SCADA or Distributed Control Systems (DCS). 
+In modern bioprocess monitoring and Process Analytical Technology (PAT), standard spectroscopic integrations frequently limit operators to streaming only 1 to 4 discrete, hardcoded wavelengths into their SCADA or Distributed Control Systems (DCS).
 
 **BioPAT® Spectro UV Server unlocks all 201 simultaneous wavelengths across the entire UV-Vis spectrum (190 nm to 390 nm in 1.0 nm increments)** in real-time. By ingesting high-frequency UDP broadcasts directly from the tec5 spectrometer/software, caching them in an in-memory Redis message bus, and exposing them over an open **OPC UA Server (Port 4841)**, this platform bridges industrial PAT spectroscopy into bioprocess automation (Ignition, Sartorius BioPAT, Emerson DeltaV, Siemens PCS 7, and Rockwell FactoryTalk).
 
@@ -67,7 +68,7 @@ Each spectrometer channel exposes 201 floating-point values corresponding to eac
 | :--- | :---: | :--- | :--- | :--- |
 | **Absorbance** | `9` | `absorbance_channel_1` | `ns=1;s=absorbance_channel_1` | Optical Absorbance (AU) across 201 wavelengths |
 | **Sample Intensity** | `4` | `sample_channel_1` | `ns=1;s=sample_channel_1` | Raw measurement intensity counts |
-| **Reference Intensity**| `5` | `onlinereference_channel_1` | `ns=1;s=onlinereference_channel_1` | Baseline reference intensity counts |
+| **Reference Intensity** | `5` | `onlinereference_channel_1` | `ns=1;s=onlinereference_channel_1` | Baseline reference intensity counts |
 | **Transmission** | `7` | `transmission_channel_1` | `ns=1;s=transmission_channel_1` | Transmittance ratio ($I / I_0$) |
 | **Calibration** | `11` | `calibration_channel_1` | `ns=1;s=calibration_channel_1` | Dark/factory calibration data |
 | **Wavelengths** | Axis | `wavelengths_channel_1` | `ns=1;s=Wavelength` | Read-only array: `[190.0, 191.0, ..., 390.0]` |
@@ -77,6 +78,7 @@ Each spectrometer channel exposes 201 floating-point values corresponding to eac
 ## Quick Start (Under 2 Minutes)
 
 ### Prerequisites
+
 - [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/)
 - *(Optional)* Python 3.10+ if running test scripts or native mode
 
@@ -91,6 +93,7 @@ docker compose up -d
 ```
 
 Verify that all three services are running:
+
 ```bash
 docker compose ps
 ```
@@ -149,11 +152,11 @@ cp .env.example .env
 | :--- | :--- | :--- |
 | `UDP_IP` | `0.0.0.0` | Listen address for spectrometer UDP datagrams |
 | `UDP_PORT` | `20202` | Port receiving tec5 UDP broadcasts |
-| `UDP_CHANNEL_NAME`| `channel_1` | Default channel identifier (`channel_1` or `channel_2`) |
+| `UDP_CHANNEL_NAME` | `channel_1` | Default channel identifier (`channel_1` or `channel_2`) |
 | `OPC_IP_ADDRESS` | `0.0.0.0` | Bind address for OPC UA server |
 | `OPC_PORT_NUMBER` | `4841` | Standard OPC UA TCP port |
-| `REDIS_IP_ADDRESS`| `redisserver` (or `localhost`) | Hostname / IP address of Redis server |
-| `REDIS_PORT_NUMBER`| `6379` | Port for Redis server |
+| `REDIS_IP_ADDRESS` | `redisserver` (or `localhost`) | Hostname / IP address of Redis server |
+| `REDIS_PORT_NUMBER` | `6379` | Port for Redis server |
 
 ---
 
