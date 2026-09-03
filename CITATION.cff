@@ -1,0 +1,18 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Sartorius BioPAT(R) Spectro UV OPC-UA Server
+message: >-
+  If you use this software for your research, please cite
+  using the following metadata.
+type: software
+authors:
+  - given-names: Joel
+    family-names: Baarbé
+    email: baarbj1@mcmaster.ca
+    affiliation: McMaster University
+    orcid: "https://orcid.org/0009-0002-4391-135X"
+repository-code: "https://github.com/Sir-Narwhal/biopat-spectrouv-server"
+url: "https://github.com/Sir-Narwhal/biopat-spectrouv-server"
+license: MIT
