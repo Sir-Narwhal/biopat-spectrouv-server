@@ -1,65 +1,46 @@
-services: 
+services:
 
-  # filemanager: 
-  #   image: filemanager
-
-  #   environment: 
-  #     REDIS_IP_ADDRESS: redisserver
-  #     REDIS_PORT_NUMBER: 6379
-  #     FTP_ADDRESS: "192.168.0.180" 
-  #     FTP_PORT: 21
-  #     FTP_NAME: "SpectroFlowUV_001"
-  #     FTP_PSWD: "etb425"
-  #     FTP_FOLDERNAME: "server_data"
-    
-  #   depends_on: 
-  #     - redisserver 
-
-  #   restart: always
-    
-  mptudpclient: 
-    image: mptudpclient
-
-    expose: 
-      - "10.20.20.11:6379"
-      - "192.168.0.180:20202/udp"
-
-    ports: 
-      - "192.168.0.180:20202:20202/udp"
-    environment: 
-      UDP_IP: "0.0.0.0"
-      UDP_PORT: "20202"
-      UDP_CHANNEL_NAME: "channel_1"
-      REDIS_IP: "10.20.20.11"
-
-  opcserver: 
-    image: opcserver 
-
-    ports: 
-      - "4841:4841"
-
-    environment: 
-      OPC_IP_ADDRESS: "0.0.0.0" 
-      OPC_PORT_NUMBER: 4841
-      REDIS_IP_ADDRESS: redisserver
-      REDIS_PORT_NUMBER: 6379
-
-    depends_on:
-      - redisserver
-   
+  # (i) Redis In-Memory Message Bus
+  redisserver:
+    image: redis:7-alpine
+    command: redis-server --bind 0.0.0.0 --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
     restart: always
 
-  redisserver: 
-    image: redis
-    
-    command: redis-server --bind 0.0.0.0 --appendonly yes
+  # (ii) UDP Parser Ingestion Service
+  udpparser:
+    build:
+      context: .
+      target: udpparser
+    environment:
+      UDP_IP: "${UDP_IP:-0.0.0.0}"
+      UDP_PORT: "${UDP_PORT:-20202}"
+      UDP_CHANNEL_NAME: "${UDP_CHANNEL_NAME:-channel_1}"
+      REDIS_IP_ADDRESS: "${REDIS_IP_ADDRESS:-redisserver}"
+      REDIS_PORT_NUMBER: "${REDIS_PORT_NUMBER:-6379}"
+    ports:
+      - "${UDP_PORT:-20202}:${UDP_PORT:-20202}/udp"
+    depends_on:
+      - redisserver
+    restart: always
 
-    ports: 
-      - "6379:6379"
-    
-    volumes: 
-      - ./redis_data:/redis_data
-    
+  # (iii) OPC UA Server Service
+  opcserver:
+    build:
+      context: .
+      target: opcserver
+    environment:
+      OPC_IP_ADDRESS: "${OPC_IP_ADDRESS:-0.0.0.0}"
+      OPC_PORT_NUMBER: "${OPC_PORT_NUMBER:-4841}"
+      REDIS_IP_ADDRESS: "${REDIS_IP_ADDRESS:-redisserver}"
+      REDIS_PORT_NUMBER: "${REDIS_PORT_NUMBER:-6379}"
+    ports:
+      - "${OPC_PORT_NUMBER:-4841}:${OPC_PORT_NUMBER:-4841}"
+    depends_on:
+      - redisserver
     restart: always
 
 volumes:

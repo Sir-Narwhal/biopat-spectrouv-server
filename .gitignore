@@ -1,9 +1,39 @@
+# Obsolete / Legacy code
+obsolete/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# MkDocs build output
+site/
+
+# Visual Studio / .NET build outputs
+.vs/
+**/[Bb]in/
+**/[Oo]bj/
+**/packages/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.msi
+
+# Local runtime data & credentials
+.env
+*.env
+redis_data/
+ftp_data/
+temp_data/
+*.bin
 *.tar
-images 
-.venv
-redis_data
-ftp_data
-
-**/.vs
-
-**/__pycache__
+images/

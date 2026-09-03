@@ -2,229 +2,79 @@
 
 ## Overview
 
-This guide covers common tasks and workflows for operating and extending the SpectraUV system.
+This guide explains how to operate the BioPAT® Spectro UV Server, configure spectrometer UDP broadcasts, and consume live 201-wavelength data in industrial SCADA and PAT platforms.
 
-## Binary Spectrum File Format
+---
 
-SpectraUV expects binary files in a specific format. Understanding this format is critical for troubleshooting and data validation.
+## The 201-Wavelength UV Spectrum
 
-### File Structure
-
-```
-Offset    Size    Description
-────────────────────────────────────────
-0         4       Magic Marker: 0xEFBEADDE
-4         76      Metadata (header info, not currently parsed)
-80        804     Spectral Data (201 × float32, little-endian)
-884       4       Magic Marker: 0xEFBEADDE
-
-Total:    888 bytes
-```
-
-### Validation
-
-The `parsebinary()` function validates file integrity by checking:
-
-1. **Start marker** (bytes 0-3): Must equal `0xEFBEADDE`
-2. **End marker** (bytes 884-887): Must equal `0xEFBEADDE`
-3. **Data length**: Exactly 804 bytes (201 × 4 bytes per float)
-
-If markers are missing or incorrect, parsing raises `ValueError: Bad file markers`.
-
-### Wavelength Mapping
-
-Spectral values are indexed by wavelength position:
+The spectrometer measures optical signals from **190.0 nm to 390.0 nm in 1.0 nm increments**, yielding an array of exactly **201 float32 values**:
 
 ```python
-wavelength_nm = 190 + index
+wavelength_nm = 190.0 + index
 
-spectrum[0]   # 190 nm
-spectrum[100] # 290 nm
-spectrum[200] # 390 nm
+spectrum[0]    # 190.0 nm
+spectrum[90]   # 280.0 nm (UV protein absorption peak)
+spectrum[200]  # 390.0 nm
 ```
 
-## Parsing Spectral Data
+---
 
-### Basic Usage
+## Data Types
 
-```python
-from parselibrary.parsing_spectra import parsebinary
+The spectrometer emits several spectral data types, each mapped to a specific tec5 type identifier:
 
-# Parse a spectrum file
-spectrum = parsebinary('/path/to/spectrum.bin')
+| Data Type | Packet Type | Redis Key | OPC UA Tag | Description |
+| :--- | :---: | :--- | :--- | :--- |
+| **Absorbance** | `9` | `absorbance_channel_1` | `absorbance_channel_1` | Optical Absorbance ($A$) across 201 wavelengths |
+| **Sample Intensity** | `4` | `sample_channel_1` | `sample_channel_1` | Raw measurement intensity counts ($I$) |
+| **Reference Intensity** | `5` | `onlinereference_channel_1`| `onlinereference_channel_1` | Baseline reference intensity counts ($I_0$) |
+| **Transmission** | `7` | `transmission_channel_1` | `transmission_channel_1` | Transmittance ratio ($I / I_0$) |
+| **Calibration** | `11` | `calibration_channel_1` | `calibration_channel_1` | Dark / factory calibration baseline |
+| **Wavelengths** | Axis | `wavelengths_channel_1` | `Wavelength` | Axis array `[190.0, 191.0, ..., 390.0]` |
 
-# spectrum is a tuple of 201 floats
-print(f"Parsed {len(spectrum)} wavelength points")
-print(f"190 nm: {spectrum[0]:.4f}")
-print(f"390 nm: {spectrum[200]:.4f}")
-```
+---
 
-### Storing in Redis
+## Connecting OPC UA Clients
 
-```python
-import json
-import redis
-from parselibrary.parsing_spectra import parsebinary
+The OPC UA server listens on `opc.tcp://<host>:4841` under namespace index `1` (`http://biopat/spectrouv`).
 
-# Parse and store
-spectrum = parsebinary('/path/to/spectrum.bin')
-r = redis.Redis(host='localhost', decode_responses=True)
-
-# Convert tuple to list for JSON serialization
-r.set('transmission_channel_1', json.dumps(list(spectrum)))
-
-# Verify storage
-stored = json.loads(r.get('transmission_channel_1'))
-print(f"Stored {len(stored)} values in Redis")
-```
-
-### Advanced: Processing Multiple Spectra
-
-```python
-import os
-import json
-import redis
-from parselibrary.parsing_spectra import parsebinary
-
-spectrum_dir = '/path/to/spectrum/files'
-r = redis.Redis(decode_responses=True)
-
-for filename in os.listdir(spectrum_dir):
-    if not filename.endswith('.bin'):
-        continue
-    
-    try:
-        spectrum = parsebinary(os.path.join(spectrum_dir, filename))
-        
-        # Create Redis key based on filename and channel
-        key = f"transmission_channel_1_{filename}"
-        r.set(key, json.dumps(list(spectrum)))
-        
-        print(f"✓ Stored {filename}")
-    except ValueError as e:
-        print(f"✗ Failed {filename}: {e}")
-```
-
-## Publishing via OPC UA
-
-### How OPC UA Publishing Works
-
-1. **OPC UA Server starts** and creates two channel objects (spectrouv_1, spectrouv_2)
-2. **Server polling loop** runs every 1 second:
-   - Scans Redis for keys matching `{datatype}*` (e.g., `transmission*`)
-   - Parses JSON values from Redis
-   - Updates corresponding OPC UA node variables
-3. **OPC UA clients** receive notifications when values change
-
-### Monitoring Published Data
-
-Check which data types are available in Redis:
-
-```python
-import redis
-
-r = redis.Redis(decode_responses=True)
-
-datatypes = ['transmission', 'absorbance', 'onlinereference', 'sample', 'calibration']
-
-for dtype in datatypes:
-    keys = list(r.scan_iter(f"{dtype}*"))
-    print(f"{dtype}: {keys}")
-
-# Example output:
-# transmission: ['transmission_channel_1', 'transmission_channel_2']
-# absorbance: ['absorbance_channel_1']
-# ...
-```
-
-### Connecting OPC UA Clients
-
-Popular OPC UA clients:
-
-- **UaExpert** (Unified Automation) — Windows GUI client
-- **Python asyncua library** — Programmatic access
-- **Kepware** — Enterprise gateway
-- **Any standards-compliant OPC UA client**
-
-Example Python client:
+### Python Client Example (`asyncua`)
 
 ```python
 import asyncio
 from asyncua import Client
 
-async def main():
-    client = Client("opc.tcp://localhost:4841")
-    async with client:
-        # Get transmission spectrum for channel 1
-        node = client.get_node("ns=1;s=transmission_channel_1")
-        value = await node.read_value()
-        print(f"Channel 1 Transmission: {value[:5]}...")  # First 5 values
+async def read_spectrum():
+    url = "opc.tcp://localhost:4841"
+    async with Client(url=url) as client:
+        # Access Channel 1 Absorbance variable node
+        node = client.get_node("ns=1;s=absorbance_channel_1")
+        absorbance_values = await node.read_value()
 
-asyncio.run(main())
+        # Access Wavelength axis
+        wl_node = client.get_node("ns=1;s=Wavelength")
+        wavelengths = await wl_node.read_value()
+
+        print(f"Acquired {len(absorbance_values)} wavelength points:")
+        print(f"  {wavelengths[90]} nm: {absorbance_values[90]:.4f} AU")
+
+asyncio.run(read_spectrum())
 ```
 
-## Troubleshooting
+### SCADA & Bioreactor Systems (Ignition, DeltaV, PCS 7)
+1. Add an OPC UA connection to `opc.tcp://<server_ip>:4841` (Security: None / Anonymous or configured).
+2. Browse to `Objects -> spectrouv_1`.
+3. Map `absorbance_channel_1` as a 201-element float array tag.
 
-### Spectrum File Not Parsing
+---
 
-**Symptom:** `ValueError: Bad file markers`
+## Testing with Mock Emitter
 
-**Causes:**
-- File is corrupted or incomplete
-- File is not in SpectraUV binary format
-- File was truncated during transfer
+When testing without a physical spectrometer attached:
 
-**Solution:**
-1. Verify file size: Should be exactly 888 bytes
-2. Check file magic bytes:
-   ```bash
-   hexdump -C spectrum.bin | head -1  # Should show: ef be ad de
-   ```
-3. Re-download or regenerate the file from the spectrometer
+```bash
+python -m parselibrary.mock_udp_emitter --host 127.0.0.1 --port 20202
+```
 
-### OPC UA Variables Not Updating
-
-**Symptom:** Connected to OPC UA server but variables show all zeros or don't change
-
-**Causes:**
-- No spectral data in Redis
-- Redis not accessible from OPC UA server
-- Channel names don't match (e.g., using `channel_1` but storing as `ch1`)
-
-**Solution:**
-1. Check Redis has data:
-   ```python
-   import redis
-   r = redis.Redis()
-   print(r.keys("*"))  # List all keys
-   ```
-2. Verify Redis connection in OPC UA server logs
-3. Ensure keys follow exact naming: `{datatype}_channel_{1|2}`
-
-### High CPU Usage
-
-**Symptom:** OPC UA server process using 100% CPU
-
-**Causes:**
-- Polling loop waiting for Redis connection
-- Network latency causing retry loops
-- Python asyncio event loop spinning
-
-**Solution:**
-- Check Redis connectivity
-- Monitor network latency
-- Review logs for connection errors
-
-## Performance Considerations
-
-- **Polling interval:** Currently 1 second; adjustable in `opcua_server.py:106`
-- **Spectral data size:** 201 values × 4 bytes = 804 bytes per spectrum
-- **Throughput:** Up to 1 spectrum/second with default 1s polling
-- **Clients:** Server handles 10+ simultaneous OPC UA client connections
-
-## Next Steps
-
-- **[Spectral Parser API](api/parsing-spectra.md)** — `parsebinary()` function documentation
-- **[OPC UA Server API](api/opcua-server.md)** — `opcua_loop()` function documentation
-- **[Architecture](architecture.md)** — Deep dive into system design
-- **[Troubleshooting](troubleshooting.md)** — More solutions and diagnostics
+This broadcasts authentic 840-byte UDP packets containing simulated protein absorbance peaks at 280 nm.

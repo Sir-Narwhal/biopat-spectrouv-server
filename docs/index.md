@@ -1,50 +1,40 @@
-# BioPal SpectraUV Documentation
+# BioPAT® Spectro UV Server Documentation
 
-Welcome to the BioPal SpectraUV system documentation! This site provides comprehensive guides for operators, system administrators, and developers working with the spectroscopy data acquisition and publication platform.
-
-## What is SpectraUV?
-
-SpectraUV is a Python-based system that:
-
-- **Acquires UV-Vis spectral data** from binary spectrum files
-- **Parses spectral absorption values** across the UV range (190-391 nm)
-- **Publishes data via OPC UA** for integration with industrial SCADA systems
-- **Manages data persistence** through Redis for inter-process communication
-
-The system is designed for high-performance, real-time spectroscopy measurement workflows in industrial environments.
-
-## Quick Links
-
-- **[Architecture](architecture.md)** — Understand the system design and components
-- **[Setup & Installation](setup.md)** — Get started with installation and configuration
-- **[Quick Start](quickstart.md)** — Run the system locally in minutes
-- **[User Guide](guide.md)** — Detailed guides for common tasks
-- **[API Reference](#)** — Auto-generated API documentation from source code
-
-## Key Components
-
-### Spectral Parser (`parsing_spectra.py`)
-Parses binary `.bin` files containing UV-Vis absorption spectra. Validates file integrity and extracts 201 floating-point absorption values.
-
-### OPC UA Server (`opcua_server.py`)
-Exposes parsed spectral data as OPC UA variables for real-time access by SCADA systems and industrial clients. Supports two spectrometer channels with five data types each.
-
-## System Requirements
-
-- Python 3.8+
-- Redis server (for inter-process communication)
-- OPC UA client (to consume published data)
-- Linux or Windows with .NET support (for full system)
-
-## Support
-
-For issues or questions:
-
-1. Check the [Troubleshooting](troubleshooting.md) guide
-2. Review the [API Reference](#)
-3. Check the project GitHub repository
+Welcome to the **BioPAT® Spectro UV Server** documentation! This system provides real-time 201-wavelength UV-Vis spectroscopy acquisition and industrial OPC UA publication for Sartorius BioPAT® Spectro UV / tec5 spectrometers.
 
 ---
 
-**Last Updated:** 2026-05-19  
-**Version:** 1.0.0
+## What is BioPAT Spectro UV Server?
+
+In industrial biomanufacturing and laboratory bioprocess monitoring, UV-Vis spectrometers capture continuous absorption curves across hundreds of wavelengths. However, standard automation setups usually constrain operators to extracting only 1 to 4 fixed wavelengths for DCS/SCADA historians.
+
+**BioPAT Spectro UV Server unlocks 201 simultaneous wavelengths (190 nm to 390 nm in 1 nm increments)**:
+- **Direct UDP Ingestion**: Captures high-frequency 840-byte UDP broadcasts from the tec5 spectrometer.
+- **Microservices Architecture**: Runs as a 3-container Docker stack (`udpparser`, `redisserver`, `opcserver`).
+- **Industrial Standards Compliance**: Publishes full spectral arrays over OPC UA (`opc.tcp://<host>:4841`) to SCADA, DeltaV, Ignition, or OSIsoft PI.
+- **Hardware-Free Testing**: Includes a mock UDP emitter to simulate full UV-Vis spectra with zero hardware attached.
+
+---
+
+## System Quick Links
+
+- **[Architecture](architecture.md)** — Understand the 3-container design and UDP protocol format
+- **[Quick Start](quickstart.md)** — Spin up the Docker stack in under 2 minutes
+- **[Setup & Deployment](setup.md)** — Container configuration and environment variables
+- **[User Guide](guide.md)** — SCADA and OPC UA client integration
+- **[API Reference](api/udp-parser.md)** — Detailed module documentation
+- **[Troubleshooting](troubleshooting.md)** — Solutions for network and port issues
+
+---
+
+## Quick Command Reference
+
+```bash
+# Clone and start the stack
+git clone https://github.com/Sir-Narwhal/biopat-spectrouv-server-1.git
+cd biopat-spectrouv-server-1
+docker compose up -d
+
+# Run simulated spectra test
+python -m parselibrary.mock_udp_emitter
+```

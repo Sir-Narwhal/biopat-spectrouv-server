@@ -162,5 +162,5 @@ The returned tuple maps directly to wavelengths:
 
 ### See Also
 
-- [User Guide](../guide.md#parsing-spectral-data) — Parsing workflow examples
-- [Troubleshooting](../troubleshooting.md#spectrum-parsing-failures) — Common parsing issues
+- [User Guide](../guide.md) — Workflow examples
+- [Troubleshooting](../troubleshooting.md) — Common troubleshooting issues

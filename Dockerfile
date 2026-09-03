@@ -1,33 +1,24 @@
-FROM python:3 AS filemanager
+# syntax=docker/dockerfile:1
+FROM python:3.11-slim AS base
 
 WORKDIR /app
 
 COPY requirements.txt ./
-RUN pip install --no-cache -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . . 
+COPY parselibrary/ ./parselibrary/
 
-CMD ["python", "./parselibrary/ftp_findnew.py"]
+# Stage 1: UDP Parser Service
+FROM base AS udpparser
+ENV PYTHONUNBUFFERED=1
+CMD ["python", "./parselibrary/udp_parser.py"]
 
-FROM python:3.13-alpine AS opcserver
-
-WORKDIR /app
-
-COPY requirements.txt ./ 
-RUN pip install --no-cache -r requirements.txt 
-
-COPY . . 
-
+# Stage 2: OPC UA Server Service
+FROM base AS opcserver
+ENV PYTHONUNBUFFERED=1
 CMD ["python", "./parselibrary/opcua_server.py"]
 
-FROM python:3 AS ftpserver
-
-WORKDIR /app
-
-COPY requirements.txt ./ 
-RUN pip install --no-cache -r requirements.txt 
-
-COPY . . 
-
-USER root 
-CMD ["python", "./ftpserver/ftp_server.py"]
+# Stage 3: Watchdog / Helper Service
+FROM base AS udphelper
+ENV PYTHONUNBUFFERED=1
+CMD ["python", "./parselibrary/spectrouv_helper.py"]

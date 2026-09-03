@@ -268,7 +268,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 ### See Also
 
-- [Architecture](../architecture.md#data-flow) — System data flow
-- [User Guide](../guide.md#publishing-via-opc-ua) — Publishing workflows
-- [Troubleshooting](../troubleshooting.md#opc-ua-server-issues) — Common OPC UA issues
-- [Quick Start](../quickstart.md) — Get running in 5 minutes
+- [Architecture](../architecture.md) — System data flow
+- [User Guide](../guide.md) — Publishing workflows
+- [Troubleshooting](../troubleshooting.md) — Common OPC UA issues
+- [Quick Start](../quickstart.md) — Get running in 2 minutes
