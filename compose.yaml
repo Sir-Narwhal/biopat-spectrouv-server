@@ -13,7 +13,7 @@ services:
   # (ii) UDP Parser Ingestion Service
   udpparser:
     build:
-      context: .
+      context: ./app
       target: udpparser
     environment:
       UDP_IP: "${UDP_IP:-0.0.0.0}"
@@ -30,7 +30,7 @@ services:
   # (iii) OPC UA Server Service
   opcserver:
     build:
-      context: .
+      context: ./app
       target: opcserver
     environment:
       OPC_IP_ADDRESS: "${OPC_IP_ADDRESS:-0.0.0.0}"
