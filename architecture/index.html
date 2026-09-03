@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentation for the BioPal SpectraUV spectroscopy data acquisition system">
+        <meta name="description" content="Documentation for the BioPAT Spectro UV 201-wavelength data acquisition and OPC UA server system">
       
       
         <meta name="author" content="Joel Baarbe">
@@ -16,22 +16,22 @@
         <link rel="prev" href="..">
       
       
-        <link rel="next" href="../setup/">
+        <link rel="next" href="../quickstart/">
       
       
         
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>Architecture - BioPal SpectraUV Documentation</title>
+        <title>Architecture - BioPAT® Spectro UV Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -90,7 +90,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="BioPal SpectraUV Documentation" class="md-header__button md-logo" aria-label="BioPal SpectraUV Documentation" data-md-component="logo">
+    <a href=".." title="BioPAT® Spectro UV Documentation" class="md-header__button md-logo" aria-label="BioPAT® Spectro UV Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -104,7 +104,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            BioPal SpectraUV Documentation
+            BioPAT® Spectro UV Documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -237,13 +237,13 @@
   
   
     <li class="md-tabs__item">
-      <a href="../setup/" class="md-tabs__link">
+      <a href="../quickstart/" class="md-tabs__link">
         
   
   
     
   
-  Setup & Installation
+  Quick Start
 
       </a>
     </li>
@@ -256,13 +256,13 @@
   
   
     <li class="md-tabs__item">
-      <a href="../quickstart/" class="md-tabs__link">
+      <a href="../setup/" class="md-tabs__link">
         
   
   
     
   
-  Quick Start
+  Setup & Deployment
 
       </a>
     </li>
@@ -296,7 +296,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../api/parsing-spectra/" class="md-tabs__link">
+        <a href="../api/udp-parser/" class="md-tabs__link">
           
   
   
@@ -351,13 +351,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="BioPal SpectraUV Documentation" class="md-nav__button md-logo" aria-label="BioPal SpectraUV Documentation" data-md-component="logo">
+    <a href=".." title="BioPAT® Spectro UV Documentation" class="md-nav__button md-logo" aria-label="BioPAT® Spectro UV Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    BioPal SpectraUV Documentation
+    BioPAT® Spectro UV Documentation
   </label>
   
     <div class="md-nav__source">
@@ -479,10 +479,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#component-architecture" class="md-nav__link">
+  <a href="#3-container-microservices-stack" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Component Architecture
+        3-Container Microservices Stack
       
     </span>
   </a>
@@ -502,10 +502,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-spectral-data-acquisition" class="md-nav__link">
+  <a href="#1-ingestion-udpparser" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Spectral Data Acquisition
+        1. Ingestion (udpparser)
       
     </span>
   </a>
@@ -513,10 +513,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-data-publication-opc-ua" class="md-nav__link">
+  <a href="#2-state-message-bus-redisserver" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Data Publication (OPC UA)
+        2. State &amp; Message Bus (redisserver)
       
     </span>
   </a>
@@ -524,10 +524,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-inter-process-communication" class="md-nav__link">
+  <a href="#3-industrial-publication-opcserver" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Inter-Process Communication
+        3. Industrial Publication (opcserver)
       
     </span>
   </a>
@@ -540,82 +540,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-format" class="md-nav__link">
+  <a href="#udp-packet-structure-840-bytes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data Format
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Data Format">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#input-binary-spectrum-file-bin" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Input: Binary Spectrum File (.bin)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#output-opc-ua-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Output: OPC UA Variables
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#technology-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Technology Stack
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#scalability-considerations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Scalability Considerations
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#environment-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Environment Configuration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#security-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Security Notes
+        UDP Packet Structure (840 Bytes)
       
     </span>
   </a>
@@ -637,14 +565,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../setup/" class="md-nav__link">
+      <a href="../quickstart/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Setup & Installation
+    Quick Start
   
 
     
@@ -664,14 +592,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/" class="md-nav__link">
+      <a href="../setup/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Quick Start
+    Setup & Deployment
   
 
     
@@ -770,14 +698,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/parsing-spectra/" class="md-nav__link">
+      <a href="../api/udp-parser/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Spectral Parser
+    UDP Parser Service
   
 
     
@@ -806,6 +734,62 @@
     
   
     OPC UA Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/parsing-spectra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Binary File Parser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/mock-emitter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mock UDP Emitter
   
 
     
@@ -875,131 +859,76 @@
 
 <h1 id="system-architecture">System Architecture<a class="headerlink" href="#system-architecture" title="Permanent link">&para;</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>SpectraUV is a distributed system for acquiring and publishing UV-Vis spectral data in real-time. The architecture centers around <strong>Redis</strong> as a message bus, enabling decoupled, scalable inter-process communication.</p>
-<h2 id="component-architecture">Component Architecture<a class="headerlink" href="#component-architecture" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────┐
-│                 Redis (State &amp; Message Bus)                  │
-│                  Port 6379 (default)                         │
-└──────────────────┬──────────────────────┬────────────────────┘
-                   │                      │
-         ┌─────────┴─────────┐  ┌─────────┴──────────┐
-         │                   │  │                    │
-    ┌────▼──────────┐   ┌────▼──────────┐   ┌───────▼──────┐
-    │  Spectral     │   │   OPC UA      │   │  Data File   │
-    │  Parser       │   │   Server      │   │  Sources     │
-    │               │   │               │   │              │
-    │ parsing_      │   │ opcua_        │   │ .bin files   │
-    │ spectra.py    │   │ server.py     │   │              │
-    └───────────────┘   └───────────────┘   └──────────────┘
-         Reads                Writes                Reads
-       .bin files          OPC UA vars             from FTP
-         from FTP           in Redis               / local
+<p>The BioPAT® Spectro UV Server is designed around a decoupled, microservices architecture using <strong>Docker Compose</strong> and <strong>Redis</strong> as a real-time in-memory message bus.</p>
+<hr />
+<h2 id="3-container-microservices-stack">3-Container Microservices Stack<a class="headerlink" href="#3-container-microservices-stack" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────┐
+│        Sartorius BioPAT® Spectro UV / tec5 Spectrometer         │
+│          Broadcasts 840-byte UDP Packets (Default: 20202)       │
+└────────────────────────────────┬────────────────────────────────┘
+                                 │ UDP Broadcast
+                                 ▼
+ ┌───────────────────────────────────────────────────────────────┐
+ │                   Docker Compose Stack                        │
+ │                                                               │
+ │  ┌──────────────────────┐  JSON Arrays  ┌──────────────────┐  │
+ │  │   (ii) udpparser     ├──────────────►│ (i) redisserver  │  │
+ │  │   - Binds :20202/udp │  Cache &amp; TTL  │ - Redis 7 Alpine │  │
+ │  │   - Unpacks 201 pts  │               │ - Port :6379     │  │
+ │  └──────────────────────┘               └────────┬─────────┘  │
+ │                                                  │            │
+ │                                                  │ 1 Hz Poll  │
+ │                                                  ▼            │
+ │                                         ┌──────────────────┐  │
+ │                                         │ (iii) opcserver  │  │
+ │                                         │ - Port :4841     │  │
+ │                                         │ - 201-pt Arrays  │  │
+ │                                         └────────┬─────────┘  │
+ └──────────────────────────────────────────────────┼────────────┘
+                                                    │
+                                                    ▼
+                                   SCADA / Bioreactor Controllers
+                                   (opc.tcp://&lt;host&gt;:4841)
 </code></pre></div>
+<hr />
 <h2 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">&para;</a></h2>
-<h3 id="1-spectral-data-acquisition">1. Spectral Data Acquisition<a class="headerlink" href="#1-spectral-data-acquisition" title="Permanent link">&para;</a></h3>
+<h3 id="1-ingestion-udpparser">1. Ingestion (<code>udpparser</code>)<a class="headerlink" href="#1-ingestion-udpparser" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Binary spectral files (<code>.bin</code>) are retrieved from FTP or local storage</li>
-<li><code>parsing_spectra.parsebinary()</code> parses the binary format:</li>
-<li>Validates magic byte markers (0xEFBEADDE)</li>
-<li>Extracts 201 floating-point absorption values</li>
-<li>Returns tuple spanning wavelengths 190-391 nm (1 nm steps)</li>
-<li>Parsed data is stored in Redis with keys like <code>transmission_channel_1</code></li>
+<li>Binds to <code>0.0.0.0:20202</code> (UDP).</li>
+<li>Receives 840-byte datagrams from the spectrometer.</li>
+<li>Parses the 36-byte header: verifies length (840), extracts point count (201), wavelength bounds (190.0–390.0 nm), and data type code.</li>
+<li>Unpacks 201 float32 values.</li>
+<li>Writes JSON arrays into Redis with a 5-second TTL (<code>ex=5</code>) to prevent stale measurements if transmission ceases.</li>
 </ul>
-<h3 id="2-data-publication-opc-ua">2. Data Publication (OPC UA)<a class="headerlink" href="#2-data-publication-opc-ua" title="Permanent link">&para;</a></h3>
+<h3 id="2-state-message-bus-redisserver">2. State &amp; Message Bus (<code>redisserver</code>)<a class="headerlink" href="#2-state-message-bus-redisserver" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>opcua_server.opcua_loop()</code> runs an async loop every 1 second</li>
-<li>Polls Redis for updates to spectral data keys</li>
-<li>Updates OPC UA server variables with latest absorption values</li>
-<li>SCADA systems and industrial clients subscribe to these variables</li>
+<li>Operates in-memory on port 6379.</li>
+<li>Decouples high-frequency network packets from OPC UA client polling.</li>
 </ul>
-<h3 id="3-inter-process-communication">3. Inter-Process Communication<a class="headerlink" href="#3-inter-process-communication" title="Permanent link">&para;</a></h3>
+<h3 id="3-industrial-publication-opcserver">3. Industrial Publication (<code>opcserver</code>)<a class="headerlink" href="#3-industrial-publication-opcserver" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Redis</strong> serves as the central hub for state management</li>
-<li>Processes communicate asynchronously without tight coupling</li>
-<li>Enables horizontal scaling (add new readers/writers without modifying existing code)</li>
+<li>Hosts standard OPC UA server on port 4841 (<code>opc.tcp://0.0.0.0:4841</code>).</li>
+<li>Namespace: <code>http://biopat/spectrouv</code>.</li>
+<li>Updates writable variables for each channel every 1 second.</li>
 </ul>
-<h2 id="data-format">Data Format<a class="headerlink" href="#data-format" title="Permanent link">&para;</a></h2>
-<h3 id="input-binary-spectrum-file-bin">Input: Binary Spectrum File (.bin)<a class="headerlink" href="#input-binary-spectrum-file-bin" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>Bytes     Content
-─────────────────────────────────
-0-3       Magic marker: 0xEFBEADDE
-4-79      Metadata (file header info)
-80-...    Spectral data (float32 values, little-endian)
-          Total: 201 values × 4 bytes = 804 bytes
-...       (content)
--4-(-1)   Magic marker: 0xEFBEADDE
+<hr />
+<h2 id="udp-packet-structure-840-bytes">UDP Packet Structure (840 Bytes)<a class="headerlink" href="#udp-packet-structure-840-bytes" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>Offset (Bytes)  Size    Type     Description
+──────────────────────────────────────────────────────────
+0-3             4       bytes    Magic Header ID (0x08200000)
+4-7             4       uint32   Header Info
+8-11            4       uint32   Payload Length (840 bytes)
+12-15           4       uint32   Padding / Reserved
+16-17           2       uint16   Spectrum Type (4=sample, 5=reference, 9=absorbance)
+18-19           2       uint16   Channel Index (1=channel 1, 2=channel 2)
+20-23           4       float32  Start Wavelength (190.0 nm)
+24-27           4       float32  End Wavelength (390.0 nm)
+28-31           4       float32  Wavelength Step (1.0 nm)
+32-35           4       uint32   Number of Points (201 points)
+36-839          804     float32  201 × 4-byte little-endian IEEE-754 floats
+──────────────────────────────────────────────────────────
+Total: 840 bytes
 </code></pre></div>
-<p><strong>Wavelength mapping:</strong> Each float value corresponds to 1 nm steps starting at 190 nm
-- Value[0] → 190 nm
-- Value[1] → 191 nm
-- ...
-- Value[200] → 390 nm</p>
-<h3 id="output-opc-ua-variables">Output: OPC UA Variables<a class="headerlink" href="#output-opc-ua-variables" title="Permanent link">&para;</a></h3>
-<p>Each spectrometer channel exposes:
-- <strong>transmission</strong> — Raw transmission spectrum (201 floats)
-- <strong>absorbance</strong> — Calculated absorbance (A = -log10(transmission))
-- <strong>onlinereference</strong> — Reference spectrum from latest calibration
-- <strong>sample</strong> — Active sample measurement
-- <strong>calibration</strong> — Calibration data used for normalization
-- <strong>wavelengths</strong> — Wavelength axis (190.0 to 390.0 nm, read-only)</p>
-<h2 id="technology-stack">Technology Stack<a class="headerlink" href="#technology-stack" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Technology</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Message Bus</td>
-<td>Redis</td>
-<td>State storage, inter-process communication</td>
-</tr>
-<tr>
-<td>Spectral Parsing</td>
-<td>Python struct module</td>
-<td>Binary data deserialization</td>
-</tr>
-<tr>
-<td>OPC UA Server</td>
-<td>asyncua (1.1.8+)</td>
-<td>Industrial protocol for SCADA integration</td>
-</tr>
-<tr>
-<td>Async Runtime</td>
-<td>asyncio</td>
-<td>Concurrent I/O operations</td>
-</tr>
-<tr>
-<td>Process Communication</td>
-<td>JSON over Redis</td>
-<td>Serialize complex data types</td>
-</tr>
-</tbody>
-</table>
-<h2 id="scalability-considerations">Scalability Considerations<a class="headerlink" href="#scalability-considerations" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Single-threaded Python</strong> with asyncio handles concurrent operations efficiently</li>
-<li><strong>Redis</strong> can scale horizontally with Redis Cluster for distributed deployments</li>
-<li><strong>OPC UA</strong> clients can connect independently; server scales with client connections</li>
-<li>Each component (parser, OPC server) can run on separate machines sharing Redis</li>
-</ul>
-<h2 id="environment-configuration">Environment Configuration<a class="headerlink" href="#environment-configuration" title="Permanent link">&para;</a></h2>
-<p>Key environment variables:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">REDIS_IP_ADDRESS</span><span class="o">=</span><span class="m">10</span>.20.20.11<span class="w">          </span><span class="c1"># Redis host</span>
-<span class="nv">REDIS_PORT_NUMBER</span><span class="o">=</span><span class="m">6379</span><span class="w">                 </span><span class="c1"># Redis port</span>
-<span class="nv">OPC_IP_ADDRESS</span><span class="o">=</span><span class="m">0</span>.0.0.0<span class="w">                 </span><span class="c1"># OPC UA listen address</span>
-<span class="nv">OPC_PORT_NUMBER</span><span class="o">=</span><span class="m">4841</span><span class="w">                   </span><span class="c1"># OPC UA port (standard)</span>
-</code></pre></div>
-<h2 id="security-notes">Security Notes<a class="headerlink" href="#security-notes" title="Permanent link">&para;</a></h2>
-<ul>
-<li>OPC UA server runs without authentication by default</li>
-<li>Redis access is unauthenticated by default</li>
-<li>For production: Use firewall rules, VPN, or configure Redis password authentication</li>
-<li>Binary file validation uses magic bytes, not cryptographic signatures</li>
-</ul>
 
 
 
@@ -1058,7 +987,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.sections", "navigation.top", "toc.integrate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

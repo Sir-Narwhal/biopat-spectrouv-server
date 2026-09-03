@@ -6,32 +6,32 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentation for the BioPal SpectraUV spectroscopy data acquisition system">
+        <meta name="description" content="Documentation for the BioPAT Spectro UV 201-wavelength data acquisition and OPC UA server system">
       
       
         <meta name="author" content="Joel Baarbe">
       
       
       
-        <link rel="prev" href="../setup/">
+        <link rel="prev" href="../architecture/">
       
       
-        <link rel="next" href="../guide/">
+        <link rel="next" href="../setup/">
       
       
         
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>Quick Start - BioPal SpectraUV Documentation</title>
+        <title>Quick Start - BioPAT® Spectro UV Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#quick-start" class="md-skip">
+        <a href="#quick-start-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +90,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="BioPal SpectraUV Documentation" class="md-header__button md-logo" aria-label="BioPal SpectraUV Documentation" data-md-component="logo">
+    <a href=".." title="BioPAT® Spectro UV Documentation" class="md-header__button md-logo" aria-label="BioPAT® Spectro UV Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -104,7 +104,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            BioPal SpectraUV Documentation
+            BioPAT® Spectro UV Documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -233,25 +233,6 @@
   
   
   
-  
-    <li class="md-tabs__item">
-      <a href="../setup/" class="md-tabs__link">
-        
-  
-  
-    
-  
-  Setup & Installation
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
     
   
   
@@ -263,6 +244,25 @@
     
   
   Quick Start
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../setup/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Setup & Deployment
 
       </a>
     </li>
@@ -296,7 +296,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../api/parsing-spectra/" class="md-tabs__link">
+        <a href="../api/udp-parser/" class="md-tabs__link">
           
   
   
@@ -351,13 +351,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="BioPal SpectraUV Documentation" class="md-nav__button md-logo" aria-label="BioPal SpectraUV Documentation" data-md-component="logo">
+    <a href=".." title="BioPAT® Spectro UV Documentation" class="md-nav__button md-logo" aria-label="BioPAT® Spectro UV Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    BioPal SpectraUV Documentation
+    BioPAT® Spectro UV Documentation
   </label>
   
     <div class="md-nav__source">
@@ -416,33 +416,6 @@
     
   
     Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../setup/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Setup & Installation
   
 
     
@@ -522,10 +495,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#1-start-the-docker-stack" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prerequisites
+        1. Start the Docker Stack
       
     </span>
   </a>
@@ -533,10 +506,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-1-install-dependencies-2-min" class="md-nav__link">
+  <a href="#2-test-with-simulated-spectra-no-hardware-needed" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 1: Install Dependencies (2 min)
+        2. Test with Simulated Spectra (No Hardware Needed)
       
     </span>
   </a>
@@ -544,115 +517,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-start-redis-1-min" class="md-nav__link">
+  <a href="#3-connect-your-opc-ua-client" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 2: Start Redis (1 min)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-3-start-opc-ua-server-1-min" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 3: Start OPC UA Server (1 min)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-4-parse-spectral-data-1-min" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 4: Parse Spectral Data (1 min)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-5-connect-opc-ua-client" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 5: Connect OPC UA Client
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#verification-checklist" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verification Checklist
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#common-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Common Issues
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Common Issues">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#opc-ua-server-wont-start" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OPC UA server won't start
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectrum-parse-fails" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Spectrum parse fails
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#opc-ua-client-cant-connect" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OPC UA client can't connect
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next Steps
+        3. Connect Your OPC UA Client
       
     </span>
   </a>
@@ -663,6 +531,33 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup & Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -753,14 +648,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/parsing-spectra/" class="md-nav__link">
+      <a href="../api/udp-parser/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Spectral Parser
+    UDP Parser Service
   
 
     
@@ -789,6 +684,62 @@
     
   
     OPC UA Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/parsing-spectra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Binary File Parser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/mock-emitter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mock UDP Emitter
   
 
     
@@ -856,118 +807,36 @@
   
 
 
-<h1 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h1>
-<p>Get the SpectraUV system running in 5 minutes!</p>
-<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Python 3.8+ with pip</li>
-<li>Redis running on <code>localhost:6379</code> (or configured via <code>REDIS_IP_ADDRESS</code>)</li>
-<li>Binary spectrum file (<code>.bin</code>) for testing</li>
-</ul>
-<h2 id="step-1-install-dependencies-2-min">Step 1: Install Dependencies (2 min)<a class="headerlink" href="#step-1-install-dependencies-2-min" title="Permanent link">&para;</a></h2>
+<h1 id="quick-start-guide">Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Permanent link">&para;</a></h1>
+<p>Get the BioPAT® Spectro UV Server running and publishing live 201-wavelength data in under 2 minutes!</p>
+<hr />
+<h2 id="1-start-the-docker-stack">1. Start the Docker Stack<a class="headerlink" href="#1-start-the-docker-stack" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Sir-Narwhal/biopat-spectrouv-server-1.git
 <span class="nb">cd</span><span class="w"> </span>biopat-spectrouv-server-1
 
-python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
-<span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># or: venv\Scripts\activate (Windows)</span>
-
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </code></pre></div>
-<h2 id="step-2-start-redis-1-min">Step 2: Start Redis (1 min)<a class="headerlink" href="#step-2-start-redis-1-min" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="c1"># Option A: Docker (recommended)</span>
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">6379</span>:6379<span class="w"> </span>redis:latest
-
-<span class="c1"># Option B: Native Redis (if installed)</span>
-redis-server<span class="w"> </span>--port<span class="w"> </span><span class="m">6379</span>
-</code></pre></div>
-<p>Verify Redis is running:
-<div class="highlight"><pre><span></span><code>redis-cli<span class="w"> </span>ping
-<span class="c1"># Expected: PONG</span>
+<p>Verify that all three containers are healthy:
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>ps
 </code></pre></div></p>
-<h2 id="step-3-start-opc-ua-server-1-min">Step 3: Start OPC UA Server (1 min)<a class="headerlink" href="#step-3-start-opc-ua-server-1-min" title="Permanent link">&para;</a></h2>
-<p>In a new terminal:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/path/to/biopat-spectrouv-server-1
-<span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># or: venv\Scripts\activate (Windows)</span>
-
-python<span class="w"> </span>parselibrary/opcua_server.py
+<hr />
+<h2 id="2-test-with-simulated-spectra-no-hardware-needed">2. Test with Simulated Spectra (No Hardware Needed)<a class="headerlink" href="#2-test-with-simulated-spectra-no-hardware-needed" title="Permanent link">&para;</a></h2>
+<p>Launch the simulated UDP emitter:</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>parselibrary.mock_udp_emitter
 </code></pre></div>
-<p>Expected output:
-<div class="highlight"><pre><span></span><code>6
-[OPC UA] Server Started
+<p>You will see output showing periodic cycles of Reference, Sample Intensity, and Absorbance packets being transmitted to port 20202:
+<div class="highlight"><pre><span></span><code>[Mock Emitter] Broadcasting mock UDP spectral data to 127.0.0.1:20202...
+[Mock Emitter] Cycle 1: Broadcasted sample, reference, and absorbance (201 wavelengths @ 190-390 nm)
 </code></pre></div></p>
-<p>The OPC UA server is now running on <code>opc.tcp://localhost:4841</code> and reading from Redis.</p>
-<h2 id="step-4-parse-spectral-data-1-min">Step 4: Parse Spectral Data (1 min)<a class="headerlink" href="#step-4-parse-spectral-data-1-min" title="Permanent link">&para;</a></h2>
-<p>In another terminal:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/path/to/biopat-spectrouv-server-1
-<span class="nb">source</span><span class="w"> </span>venv/bin/activate
-
-python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
-<span class="s2">from parselibrary.parsing_spectra import parsebinary</span>
-<span class="s2">import json</span>
-<span class="s2">import redis</span>
-
-<span class="s2"># Parse a spectrum (update path to your .bin file)</span>
-<span class="s2">spectrum = parsebinary(&#39;/path/to/your/spectrum.bin&#39;)</span>
-
-<span class="s2"># Store in Redis</span>
-<span class="s2">r = redis.Redis(decode_responses=True)</span>
-<span class="s2">r.set(&#39;transmission_channel_1&#39;, json.dumps(list(spectrum)))</span>
-
-<span class="s2">print(f&#39;Stored {len(spectrum)} wavelength points in Redis&#39;)</span>
-<span class="s2">print(f&#39;Range: {spectrum[0]:.4f} to {spectrum[-1]:.4f}&#39;)</span>
-<span class="s2">&quot;</span>
-</code></pre></div>
-<h2 id="step-5-connect-opc-ua-client">Step 5: Connect OPC UA Client<a class="headerlink" href="#step-5-connect-opc-ua-client" title="Permanent link">&para;</a></h2>
-<p>Connect any OPC UA client to <code>opc.tcp://localhost:4841</code> and you should see:</p>
-<div class="highlight"><pre><span></span><code>Root
-├── spectrouv_1
-│   ├── transmission_channel_1 (transmission spectrum, 201 values)
-│   ├── absorbance_channel_1
-│   ├── onlinereference_channel_1
-│   ├── sample_channel_1
-│   ├── calibration_channel_1
-│   └── Wavelength (190-391 nm, 201 values)
-└── spectrouv_2
-    ├── transmission_channel_2
-    ├── absorbance_channel_2
-    ├── onlinereference_channel_2
-    ├── sample_channel_2
-    ├── calibration_channel_2
-    └── Wavelength
-</code></pre></div>
-<h2 id="verification-checklist">Verification Checklist<a class="headerlink" href="#verification-checklist" title="Permanent link">&para;</a></h2>
-<ul class="task-list">
-<li class="task-list-item"><input type="checkbox" disabled/> Redis server is running (<code>redis-cli ping</code> returns PONG)</li>
-<li class="task-list-item"><input type="checkbox" disabled/> OPC UA server started without errors and shows "Server Started"</li>
-<li class="task-list-item"><input type="checkbox" disabled/> Spectrum file was parsed and stored in Redis</li>
-<li class="task-list-item"><input type="checkbox" disabled/> OPC UA client connected successfully</li>
-<li class="task-list-item"><input type="checkbox" disabled/> OPC UA variables are visible and update every second</li>
-</ul>
-<h2 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h2>
-<h3 id="opc-ua-server-wont-start">OPC UA server won't start<a class="headerlink" href="#opc-ua-server-wont-start" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>Connection refused: No address associated with hostname
-</code></pre></div>
-<p>Check Redis is accessible:
-<div class="highlight"><pre><span></span><code>redis-cli<span class="w"> </span>-h<span class="w"> </span>localhost<span class="w"> </span>ping
+<hr />
+<h2 id="3-connect-your-opc-ua-client">3. Connect Your OPC UA Client<a class="headerlink" href="#3-connect-your-opc-ua-client" title="Permanent link">&para;</a></h2>
+<p>Connect to:
+<div class="highlight"><pre><span></span><code>opc.tcp://localhost:4841
 </code></pre></div></p>
-<h3 id="spectrum-parse-fails">Spectrum parse fails<a class="headerlink" href="#spectrum-parse-fails" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>ValueError: Bad file markers
-</code></pre></div>
-<p>Ensure your <code>.bin</code> file is valid (starts and ends with magic bytes 0xEFBEADDE).</p>
-<h3 id="opc-ua-client-cant-connect">OPC UA client can't connect<a class="headerlink" href="#opc-ua-client-cant-connect" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Check firewall rules on port 4841</li>
-<li>Verify server is running: <code>ps aux | grep opcua_server.py</code></li>
-<li>Check network connectivity to server host</li>
-</ul>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong><a href="../setup/">Setup Guide</a></strong> — Full installation and configuration</li>
-<li><strong><a href="../guide/">User Guide</a></strong> — Detailed examples and workflows</li>
-<li><strong><a href="../api/parsing-spectra/">Spectral Parser API</a></strong> — Complete <code>parsebinary()</code> documentation</li>
-<li><strong><a href="../api/opcua-server/">OPC UA Server API</a></strong> — Complete <code>opcua_loop()</code> documentation</li>
-<li><strong><a href="../troubleshooting/">Troubleshooting</a></strong> — Solutions for common problems</li>
-</ul>
+<p>In your OPC UA client (such as <a href="https://www.unified-automation.com/products/development-tools/uaexpert.html">UaExpert</a>):
+1. Navigate to: <code>Root -&gt; Objects -&gt; spectrouv_1</code>.
+2. Drag <code>absorbance_channel_1</code>, <code>sample_channel_1</code>, or <code>Wavelength</code> into the Data Access View.
+3. Observe live array updates in real-time!</p>
 
 
 
@@ -1026,7 +895,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;<
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.sections", "navigation.top", "toc.integrate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
