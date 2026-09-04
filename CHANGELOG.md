@@ -1,4 +1,4 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+
+## 1.0.0 (2026-09-04)
+
+
+### Bug Fixes
+
+* resolve all blocking publication issues ([d16a155](https://github.com/Sir-Narwhal/biopat-spectrouv-server/commit/d16a155c28d2701bbe189edc500697e13e09db35))
 
 ## [Unreleased]
 
