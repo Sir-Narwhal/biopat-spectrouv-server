@@ -1,6 +1,6 @@
 aiofiles==25.1.0
 aiosqlite==0.22.0
-asyncua==1.1.8
+asyncua==2.0.1
 cffi==2.0.0
 cryptography==46.0.3
 pycparser==2.23
