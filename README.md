@@ -181,3 +181,23 @@ mkdocs serve
 
 - **License**: Released under the [MIT License](LICENSE).
 - **Disclaimer**: *BioPAT®* is a registered trademark of Sartorius AG. *tec5* and *tecSaaS* are trademarks of tec5 AG. This independent open-source project is not affiliated with, endorsed by, or officially connected to Sartorius AG or tec5 AG.
+
+---
+
+## Citation
+
+If you use this software in your research, please cite it — see [CITATION.cff](CITATION.cff) (or use GitHub's "Cite this repository" button, which reads directly from that file) for the up-to-date, machine-readable metadata. Plain-text form:
+
+> Baarbé, J. (2025). *Sartorius BioPAT(R) Spectro UV OPC-UA Server* [Computer software]. https://github.com/Sir-Narwhal/biopat-spectrouv-server
+
+*A DOI will be added here once the software is archived (e.g. via Zenodo) — until then, cite the repository URL above. Once a `doi:` field is added to [CITATION.cff](CITATION.cff), it will show up automatically via the "Cite this repository" button.*
+
+```bibtex
+@software{baarbe_biopat_spectro_uv,
+  author  = {Baarbé, Joel},
+  title   = {Sartorius BioPAT(R) Spectro UV OPC-UA Server},
+  year    = {2025},
+  license = {MIT},
+  url     = {https://github.com/Sir-Narwhal/biopat-spectrouv-server}
+}
+```
