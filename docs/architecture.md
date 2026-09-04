@@ -6,37 +6,9 @@ The BioPAT® Spectro UV Server is designed around a decoupled, microservices arc
 
 ---
 
-## 3-Container Microservices Stack
+## 4-Container Microservices Stack
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│        Sartorius BioPAT® Spectro UV / tec5 Spectrometer         │
-│          Broadcasts 840-byte UDP Packets (Default: 20202)       │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │ UDP Broadcast
-                                 ▼
- ┌───────────────────────────────────────────────────────────────┐
- │                   Docker Compose Stack                        │
- │                                                               │
- │  ┌──────────────────────┐  JSON Arrays  ┌──────────────────┐  │
- │  │   (ii) udpparser     ├──────────────►│ (i) redisserver  │  │
- │  │   - Binds :20202/udp │  Cache & TTL  │ - Redis 7 Alpine │  │
- │  │   - Unpacks 201 pts  │               │ - Port :6379     │  │
- │  └──────────────────────┘               └────────┬─────────┘  │
- │                                                  │            │
- │                                                  │ 1 Hz Poll  │
- │                                                  ▼            │
- │                                         ┌──────────────────┐  │
- │                                         │ (iii) opcserver  │  │
- │                                         │ - Port :4841     │  │
- │                                         │ - 201-pt Arrays  │  │
- │                                         └────────┬─────────┘  │
- └──────────────────────────────────────────────────┼────────────┘
-                                                    │
-                                                    ▼
-                                   SCADA / Bioreactor Controllers
-                                   (opc.tcp://<host>:4841)
-```
+![Architecture diagram: the tec5 spectrometer connects to the vendor tecSaaS MPT software, which broadcasts UDP datagrams to a Docker Compose stack of udpparser, redisserver, udphelper, and opcserver — all running on the same host PC — which publishes to SCADA and signals the Windows Tray App directly via Redis.](assets/architecture.svg)
 
 ---
 
@@ -44,10 +16,11 @@ The BioPAT® Spectro UV Server is designed around a decoupled, microservices arc
 
 ### 1. Ingestion (`udpparser`)
 - Binds to `0.0.0.0:20202` (UDP).
-- Receives 840-byte datagrams from the spectrometer.
+- Receives 840-byte datagrams from the **tec5 tecSaaS MPT software** — the vendor application that drives the spectrometer and does the actual UDP broadcasting (the spectrometer hardware itself has no network interface here). Every acquisition cycle sends up to 5 of these datagrams, one per data type (sample, onlinereference, transmission, absorbance, calibration).
 - Parses the 36-byte header: verifies length (840), extracts point count (201), wavelength bounds (190.0–390.0 nm), and data type code.
 - Unpacks 201 float32 values.
 - Writes JSON arrays into Redis with a 5-second TTL (`ex=5`) to prevent stale measurements if transmission ceases.
+- **Channel assignment is manual, not auto-detected.** The packet header does carry a channel index (bytes 18–19, see below), but `udpparser` never reads it — every value it writes is tagged with whatever `UDP_CHANNEL_NAME` is set to in `compose.yaml`/`.env` (`channel_1` by default). Setting this correctly for your actual wiring is required; see [Setup & Deployment](setup.md#channel-selection-required).
 
 ### 2. State & Message Bus (`redisserver`)
 - Operates in-memory on port 6379.
@@ -57,6 +30,13 @@ The BioPAT® Spectro UV Server is designed around a decoupled, microservices arc
 - Hosts standard OPC UA server on port 4841 (`opc.tcp://0.0.0.0:4841`).
 - Namespace: `http://biopat/spectrouv`.
 - Updates writable variables for each channel every 1 second.
+
+### 4. Session Watchdog (`udphelper`)
+- Polls the `absorbance_channel_1` key in Redis once per second.
+- If the key is missing (expired TTL, meaning no fresh UDP data), sets `mpt_refresh = "true"` in Redis and logs a warning.
+- Re-arms itself once fresh absorbance data reappears, so it can raise the flag again if data goes stale a second time. The `mpt_refresh` key itself is cleared by the tray application after it finishes handling the restart.
+- Has no direct network exposure — it only communicates via Redis. The `mpt_refresh` key is polled by the [MPT Guardian tray companion](../tray_app/README.md), which reacts by restarting the tec5 measurement session. MPT Guardian, tecSaaS MPT, and this whole Docker Compose stack all run on the same Windows PC in the recommended deployment (via Docker Desktop) — Guardian talks to `redisserver` over `localhost`, not over the network.
+- MPT Guardian is optional for short test sessions, but **mandatory for any session longer than ~6 hours** — the tec5 tecSaaS MPT software intermittently stops transmitting UDP data on its own over long runs, and this watchdog/tray-app pair is the only thing that detects and recovers from it automatically. Without MPT Guardian installed, `absorbance_channel_1` simply stays stale with no automatic recovery.
 
 ---
 

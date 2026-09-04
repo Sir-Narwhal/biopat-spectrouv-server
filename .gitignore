@@ -22,6 +22,8 @@ site/
 **/[Bb]in/
 **/[Oo]bj/
 **/packages/
+**/cslibraries/
+**/library/
 *.user
 *.suo
 *.userosscache

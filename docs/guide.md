@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide explains how to operate the BioPAT® Spectro UV Server, configure spectrometer UDP broadcasts, and consume live 201-wavelength data in industrial SCADA and PAT platforms.
+This guide explains how to operate the BioPAT® Spectro UV Server, configure the tecSaaS MPT UDP broadcast, and consume live 201-wavelength data in industrial SCADA and PAT platforms.
 
 ---
 
@@ -22,7 +22,7 @@ spectrum[200]  # 390.0 nm
 
 ## Data Types
 
-The spectrometer emits several spectral data types, each mapped to a specific tec5 type identifier:
+For each acquisition cycle, the tec5 tecSaaS MPT software (driving the spectrometer) broadcasts 5 separate 840-byte UDP datagrams — one per data type below, each mapped to a specific tec5 type identifier:
 
 | Data Type | Packet Type | Redis Key | OPC UA Tag | Description |
 | :--- | :---: | :--- | :--- | :--- |
@@ -31,7 +31,9 @@ The spectrometer emits several spectral data types, each mapped to a specific te
 | **Reference Intensity** | `5` | `onlinereference_channel_1`| `onlinereference_channel_1` | Baseline reference intensity counts ($I_0$) |
 | **Transmission** | `7` | `transmission_channel_1` | `transmission_channel_1` | Transmittance ratio ($I / I_0$) |
 | **Calibration** | `11` | `calibration_channel_1` | `calibration_channel_1` | Dark / factory calibration baseline |
-| **Wavelengths** | Axis | `wavelengths_channel_1` | `Wavelength` | Axis array `[190.0, 191.0, ..., 390.0]` |
+| **Wavelengths** | Axis | *(not stored in Redis — computed by `opcserver`)* | `Wavelength` | Axis array `[190.0, 191.0, ..., 390.0]` |
+
+The `_channel_1` suffix above comes from `udpparser`'s `UDP_CHANNEL_NAME` setting, **not** from the packet itself — `udpparser` doesn't read the channel index in the UDP header, so this is a manual choice in `compose.yaml`/`.env`. If your instrument is wired to channel 2, set `UDP_CHANNEL_NAME=channel_2` and all the keys/tags above become `..._channel_2` instead. See [Setup & Deployment](setup.md#channel-selection-required).
 
 ---
 

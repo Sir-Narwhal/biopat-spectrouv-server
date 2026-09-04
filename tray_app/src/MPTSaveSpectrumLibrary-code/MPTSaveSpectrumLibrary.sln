@@ -5,9 +5,9 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPTSaveSpectrumLibrary", "MPTSaveSpectrumLibrary.csproj", "{4BC0EEA8-FB1E-4677-BD5A-EFED8F525CFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPTTrayApplication", "..\MPTTrayApplication\MPTTrayApplication.csproj", "{27490EB3-6EF5-4198-9BC4-06BDF2F481A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPTGuardian", "..\MPTGuardian\MPTGuardian.csproj", "{27490EB3-6EF5-4198-9BC4-06BDF2F481A2}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MPTHelperApplication-Installer", "..\MPTHelperApplication-Installer\MPTHelperApplication-Installer.vdproj", "{E6B8B07F-A7A4-3D11-ED53-6E0DEFD31E1D}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MPTGuardianInstaller", "..\MPTGuardianInstaller\MPTGuardianInstaller.vdproj", "{E6B8B07F-A7A4-3D11-ED53-6E0DEFD31E1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,7 +24,9 @@ Global
 		{27490EB3-6EF5-4198-9BC4-06BDF2F481A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27490EB3-6EF5-4198-9BC4-06BDF2F481A2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E6B8B07F-A7A4-3D11-ED53-6E0DEFD31E1D}.Debug|Any CPU.ActiveCfg = Debug
+		{E6B8B07F-A7A4-3D11-ED53-6E0DEFD31E1D}.Debug|Any CPU.Build.0 = Debug
 		{E6B8B07F-A7A4-3D11-ED53-6E0DEFD31E1D}.Release|Any CPU.ActiveCfg = Release
+		{E6B8B07F-A7A4-3D11-ED53-6E0DEFD31E1D}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

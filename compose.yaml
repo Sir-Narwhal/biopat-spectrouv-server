@@ -43,5 +43,17 @@ services:
       - redisserver
     restart: always
 
+  # (iv) Watchdog / Helper Service
+  udphelper:
+    build:
+      context: ./app
+      target: udphelper
+    environment:
+      REDIS_IP_ADDRESS: "${REDIS_IP_ADDRESS:-redisserver}"
+      REDIS_PORT_NUMBER: "${REDIS_PORT_NUMBER:-6379}"
+    depends_on:
+      - redisserver
+    restart: always
+
 volumes:
   redis_data:

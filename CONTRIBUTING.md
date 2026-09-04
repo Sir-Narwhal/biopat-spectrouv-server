@@ -1,4 +1,4 @@
-﻿# Contributing to BioPAT® Spectro UV Server
+# Contributing to BioPAT® Spectro UV Server
 
 Thank you for your interest in contributing! This project welcomes bug reports, feature requests, documentation improvements, and code contributions.
 
@@ -54,7 +54,7 @@ Open a GitHub Issue with the label enhancement. Describe:
 
 ### Clone & install dependencies
 
-`ash
+```bash
 git clone <https://github.com/Sir-Narwhal/biopat-spectrouv-server.git>
 cd biopat-spectrouv-server-1
 
@@ -71,7 +71,7 @@ pip install -r requirements.txt
 # Install development dependencies (pytest)
 
 pip install -r requirements-dev.txt
-`
+```
 
 ---
 
@@ -79,9 +79,9 @@ pip install -r requirements-dev.txt
 
 The test suite uses **pytest** and requires no external services (no Redis, no hardware).
 
-`ash
+```bash
 pytest tests/ -v
-`
+```
 
 All tests must pass before a pull request can be merged. The CI pipeline runs
 the suite against Python 3.10, 3.11, and 3.12 automatically on every push and PR.
@@ -90,17 +90,17 @@ the suite against Python 3.10, 3.11, and 3.12 automatically on every push and PR
 
 | File | What it tests |
 |---|---|
-|  ests/test_mock_emitter.py | uild_tec5_packet() — binary packet construction, header fields, per-type value behaviour |
-|  ests/test_udp_parser.py | unpack_udp() — round-trip parsing, spectral physics, wavelength metadata |
+| tests/test_mock_emitter.py | build_tec5_packet() — binary packet construction, header fields, per-type value behaviour |
+| tests/test_udp_parser.py | unpack_udp() — round-trip parsing, spectral physics, wavelength metadata |
 
 ---
 
 ## Submitting a Pull Request
 
 1. **Fork** the repository and create a feature branch off main:
-   `ash
+   ```bash
    git checkout -b feat/my-feature
-   `
+   ```
 
 2. Make your changes, following the [code style](#code-style) guidelines.
 
@@ -124,8 +124,7 @@ the suite against Python 3.10, 3.11, and 3.12 automatically on every push and PR
 - **Imports**: Standard library first, then third-party, then local — separated by blank lines.
 - **No bare except:** — always catch specific exception types.
 
-Optionally, format your code with [lack](https://black.readthedocs.io/) and lint with [
-uff](https://docs.astral.sh/ruff/) before committing.
+Optionally, format your code with [black](https://black.readthedocs.io/) and lint with [ruff](https://docs.astral.sh/ruff/) before committing.
 
 ---
 
@@ -133,32 +132,31 @@ uff](https://docs.astral.sh/ruff/) before committing.
 
 This project uses [Conventional Commits](https://www.conventionalcommits.org/):
 
-`
+```
 <type>(<scope>): <short summary>
 
 [optional body]
-`
+```
 
 Common types:
 
 | Type | When to use |
 | --- | --- |
-| eat | New feature |
-| ix | Bug fix |
+| feat | New feature |
+| fix | Bug fix |
 | docs | Documentation changes only |
-| est | Adding or correcting tests |
-|
-efactor | Code change that is not a fix or feature |
+| test | Adding or correcting tests |
+| refactor | Code change that is not a fix or feature |
 | chore | Tooling, CI, dependency updates |
 
 Example:
 
-`
+```
 feat(udp-parser): add support for dual-channel simultaneous ingestion
 
 Extends collect_mpt_spectra to process channel_2 datagrams in the
 same batch loop, reducing latency for dual-spectrometer setups.
-`
+```
 
 ---
 

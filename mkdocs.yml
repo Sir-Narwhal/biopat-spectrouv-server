@@ -35,7 +35,7 @@ nav:
   - API Reference:
     - UDP Parser Service: api/udp-parser.md
     - OPC UA Server: api/opcua-server.md
-    - Binary File Parser: api/parsing-spectra.md
+    - Watchdog Service: api/watchdog.md
     - Mock UDP Emitter: api/mock-emitter.md
   - Troubleshooting: troubleshooting.md
 

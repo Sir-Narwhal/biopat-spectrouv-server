@@ -13,7 +13,7 @@ cd biopat-spectrouv-server-1
 docker compose up -d
 ```
 
-Verify that all three containers are healthy:
+Verify that all four containers are healthy:
 ```bash
 docker compose ps
 ```

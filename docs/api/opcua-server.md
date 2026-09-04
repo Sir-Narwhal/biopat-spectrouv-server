@@ -9,18 +9,18 @@ This module implements an OPC UA server that publishes UV-Vis spectral data for 
 ## Function: `opcua_loop()`
 
 ```python
-async def opcua_loop(redis_server: redis.Redis) -> None:
+async def opcua_loop(redis_client: redis.Redis) -> None:
 ```
 
 ### Description
 
 Run the OPC UA server and continuously publish spectral data from Redis to connected SCADA clients.
 
-Creates an OPC UA server with a BioPal SpectraUV namespace containing two spectrometer channels (spectrouv_1, spectrouv_2). Each channel exposes five spectral data types (transmission, absorbance, reference, sample, calibration) plus a wavelength axis. The server polls Redis every 1 second for updated spectral values and pushes them to OPC UA clients, enabling real-time subscription and monitoring.
+Creates an OPC UA server registered under the `http://biopat/spectrouv` namespace, containing two spectrometer channels (spectrouv_1, spectrouv_2). Each channel exposes five spectral data types (transmission, absorbance, onlinereference, sample, calibration) plus a read-only wavelength axis and `intensity`/`reference_intensity` aliases. The server polls Redis every 1 second for updated spectral values and pushes them to OPC UA clients, enabling real-time subscription and monitoring.
 
 ### Parameters
 
-**`redis_server: redis.Redis`**
+**`redis_client: redis.Redis`**
 - An active Redis connection (authenticated and validated)
 - Port: 6379 (default) or as configured
 - Must have `decode_responses=True` for string operations
@@ -38,10 +38,10 @@ The function executes an infinite async loop with these steps:
 
 1. **Initialization** (runs once)
    - Creates OPC UA Server instance
-   - Registers BioPal SpectraUV namespace
+   - Registers the `http://biopat/spectrouv` namespace
    - Creates two channel objects (spectrouv_1, spectrouv_2)
    - For each channel and datatype, creates writable OPC UA variables
-   - Creates read-only wavelength axis variable (190-391 nm)
+   - Creates read-only wavelength axis variable (190-390 nm, 201 points)
 
 2. **Polling Loop** (repeats every 1 second)
    - Scans Redis for keys matching patterns: `transmission*`, `absorbance*`, etc.
@@ -57,7 +57,7 @@ The function executes an infinite async loop with these steps:
 #### OPC UA Namespace Structure
 
 ```
-ns=1 (BioPal SpectraUV)
+ns=1 (http://biopat/spectrouv)
 ├── spectrouv_1 (Object)
 │   ├── transmission_channel_1 (Variable, 201 floats)
 │   ├── absorbance_channel_1 (Variable, 201 floats)
@@ -88,7 +88,7 @@ Each datatype variable contains 201 floating-point values:
 
 #### Wavelength Axis
 
-- **201 values** from 190.0 to 390.0 nm
+- **201 values** from 190.0 to 390.0 nm (inclusive)
 - **Spacing:** 1.0 nm between consecutive values
 - **Read-only:** Cannot be modified via OPC UA clients
 
@@ -117,7 +117,7 @@ onlinereference_channel_1
 Configuration is via environment variables:
 
 ```python
-REDIS_IP_ADDRESS = os.environ.get("REDIS_IP_ADDRESS", "10.20.20.11")
+REDIS_IP_ADDRESS = os.environ.get("REDIS_IP_ADDRESS", "localhost")
 REDIS_PORT_NUMBER = int(os.environ.get("REDIS_PORT_NUMBER", 6379))
 OPC_IP_ADDRESS = os.environ.get("OPC_IP_ADDRESS", "0.0.0.0")
 OPC_PORT_NUMBER = int(os.environ.get("OPC_PORT_NUMBER", 4841))
@@ -125,7 +125,7 @@ OPC_PORT_NUMBER = int(os.environ.get("OPC_PORT_NUMBER", 4841))
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| REDIS_IP_ADDRESS | 10.20.20.11 | Redis host IP |
+| REDIS_IP_ADDRESS | localhost (redisserver inside Docker Compose) | Redis host IP |
 | REDIS_PORT_NUMBER | 6379 | Redis port |
 | OPC_IP_ADDRESS | 0.0.0.0 | OPC UA listen address (0.0.0.0 = all interfaces) |
 | OPC_PORT_NUMBER | 4841 | OPC UA port (standard) |
@@ -189,19 +189,17 @@ CMD ["python", "-m", "parselibrary.opcua_server"]
 
 #### Publishing Data to Redis
 
+`opcua_loop` only reads from Redis — it never touches the network. Any process that writes a 201-element JSON float array to a `{datatype}_{channel}` key (see [`udp_parser.main_loop`](udp-parser.md)) will have it picked up on the next 1-second poll:
+
 ```python
 import json
 import redis
-from parselibrary.parsing_spectra import parsebinary
 
-# Parse spectrum
-spectrum = parsebinary("/data/sample.bin")
-
-# Connect to Redis
 r = redis.Redis(decode_responses=True)
 
-# Publish to Redis for OPC UA server to read
-r.set("transmission_channel_1", json.dumps(list(spectrum)))
+# Publish 201 synthetic values for OPC UA server to pick up
+spectrum = [0.0] * 201
+r.set("transmission_channel_1", json.dumps(spectrum), ex=5)
 
 # Server will pick this up in next polling cycle (~1 second)
 print("Spectrum published")
@@ -241,7 +239,7 @@ asyncio.run(connect())
 
 ### Performance Characteristics
 
-- **Polling latency:** ~1 second (configurable in source code, line 106)
+- **Polling latency:** ~1 second (the `asyncio.sleep(1.0)` at the end of the polling loop)
 - **OPC UA update frequency:** 1 Hz
 - **Redis scan time:** ~5-50 ms per poll (depends on key count)
 - **Memory overhead:** ~5 MB for 2 channels × 5 datatypes × 201 values
@@ -249,10 +247,10 @@ asyncio.run(connect())
 
 ### Logging
 
-Events are logged at level WARNING (configured in source):
+Events are logged at level INFO by default (configured in source):
 
 ```python
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 ```
 
 Change level for more verbose output:
@@ -264,7 +262,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 ### Related Functions
 
-- [`parsing_spectra.parsebinary()`](parsing-spectra.md) — Parse spectrum files for storage in Redis
+- [`udp_parser.main_loop()`](udp-parser.md) — Writes the Redis keys this function reads
+- [`spectrouv_helper.watchdog_cycle()`](watchdog.md) — Monitors the same Redis data for staleness
 
 ### See Also
 

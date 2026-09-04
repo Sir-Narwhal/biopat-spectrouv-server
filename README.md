@@ -20,43 +20,16 @@ In modern bioprocess monitoring and Process Analytical Technology (PAT), standar
 
 ## System Architecture
 
-The server runs as a clean, decoupled **3-container microservices stack**:
+The server runs as a clean, decoupled **4-container microservices stack**:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│        Sartorius BioPAT® Spectro UV / tec5 Spectrometer         │
-│          Broadcasts 840-byte UDP Packets (Default: 20202)       │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │ UDP Datagrams
-                                 ▼
- ┌───────────────────────────────────────────────────────────────┐
- │                   Docker Compose Stack                        │
- │                                                               │
- │  ┌──────────────────────┐  JSON Arrays  ┌──────────────────┐  │
- │  │   (ii) udpparser     ├──────────────►│ (i) redisserver  │  │
- │  │   - Binds :20202/udp │  Cache & TTL  │ - Redis 7 Alpine │  │
- │  │   - Unpacks 201 pts  │               │ - Port :6379     │  │
- │  └──────────────────────┘               └────────┬─────────┘  │
- │                                                  │            │
- │                                                  │ 1 Hz Poll  │
- │                                                  ▼            │
- │                                         ┌──────────────────┐  │
- │                                         │ (iii) opcserver  │  │
- │                                         │ - Port :4841     │  │
- │                                         │ - 201-pt Arrays  │  │
- │                                         └────────┬─────────┘  │
- └──────────────────────────────────────────────────┼────────────┘
-                                                    │
-                                                    ▼
-                                   SCADA / Bioreactor Controllers
-                                   (opc.tcp://<host>:4841)
-```
+![Architecture diagram: the tec5 spectrometer connects to the vendor tecSaaS MPT software, which broadcasts UDP datagrams to a Docker Compose stack of udpparser, redisserver, udphelper, and opcserver — all running on the same host PC — which publishes to SCADA and signals the Windows Tray App directly via Redis.](docs/assets/architecture.svg)
 
 ### Components
 
 1. **`redisserver`**: Low-latency, in-memory state bus decoupling UDP packet ingestion from OPC UA publisher polling.
 2. **`udpparser`**: High-throughput UDP socket listener. Unpacks 840-byte binary packets into 201-wavelength float arrays and writes them to Redis with auto-expiry (`ex=5s`) to prevent stale data display.
 3. **`opcserver`**: Standard OPC UA server exposing `Channel 1` and `Channel 2` nodes with 201-element float arrays for Sample Intensity, Reference Intensity, Absorbance, Transmission, Calibration, and Wavelength Axis.
+4. **`udphelper`**: Background watchdog that checks Channel 1 Absorbance freshness in Redis and sets an `mpt_refresh` signal key when data goes stale, so the optional [Windows tray companion](tray_app/README.md) can restart the spectrometer's measurement session automatically.
 
 ---
 
@@ -71,7 +44,7 @@ Each spectrometer channel exposes 201 floating-point values corresponding to eac
 | **Reference Intensity** | `5` | `onlinereference_channel_1` | `ns=1;s=onlinereference_channel_1` | Baseline reference intensity counts |
 | **Transmission** | `7` | `transmission_channel_1` | `ns=1;s=transmission_channel_1` | Transmittance ratio ($I / I_0$) |
 | **Calibration** | `11` | `calibration_channel_1` | `ns=1;s=calibration_channel_1` | Dark/factory calibration data |
-| **Wavelengths** | Axis | `wavelengths_channel_1` | `ns=1;s=Wavelength` | Read-only array: `[190.0, 191.0, ..., 390.0]` |
+| **Wavelengths** | Axis | *(not stored in Redis — computed by `opcserver`)* | `ns=1;s=Wavelength` | Read-only array: `[190.0, 191.0, ..., 390.0]` |
 
 ---
 
@@ -88,11 +61,11 @@ Each spectrometer channel exposes 201 floating-point values corresponding to eac
 git clone https://github.com/Sir-Narwhal/biopat-spectrouv-server-1.git
 cd biopat-spectrouv-server-1
 
-# Start Redis, UDP Parser, and OPC UA Server
+# Start Redis, UDP Parser, OPC UA Server, and the Watchdog
 docker compose up -d
 ```
 
-Verify that all three services are running:
+Verify that all four services are running:
 
 ```bash
 docker compose ps
@@ -136,6 +109,9 @@ python -m parselibrary.udp_parser
 
 # 4. Launch the OPC UA Server (Terminal 2)
 python -m parselibrary.opcua_server
+
+# 5. Launch the Watchdog (Terminal 3, optional)
+python -m parselibrary.spectrouv_helper
 ```
 
 ---
@@ -150,21 +126,27 @@ cp .env.example .env
 
 | Variable | Default | Description |
 | :--- | :--- | :--- |
-| `UDP_IP` | `0.0.0.0` | Listen address for spectrometer UDP datagrams |
+| `UDP_IP` | `0.0.0.0` | Listen address for tecSaaS MPT's UDP broadcast |
 | `UDP_PORT` | `20202` | Port receiving tec5 UDP broadcasts |
-| `UDP_CHANNEL_NAME` | `channel_1` | Default channel identifier (`channel_1` or `channel_2`) |
+| `UDP_CHANNEL_NAME` | `channel_1` | **Required, manual** — which channel this data gets tagged as (`channel_1` or `channel_2`). Not read from the packet; see warning below. |
 | `OPC_IP_ADDRESS` | `0.0.0.0` | Bind address for OPC UA server |
 | `OPC_PORT_NUMBER` | `4841` | Standard OPC UA TCP port |
 | `REDIS_IP_ADDRESS` | `redisserver` (or `localhost`) | Hostname / IP address of Redis server |
 | `REDIS_PORT_NUMBER` | `6379` | Port for Redis server |
 
+> [!IMPORTANT]
+> **`UDP_CHANNEL_NAME` must be set manually to match your actual spectrometer wiring — it is never auto-detected.** The UDP packet header does carry a channel index, but `udpparser` doesn't read it; every value gets tagged with whatever `UDP_CHANNEL_NAME` is set to, silently, with no error if it's wrong. If your instrument is on channel 2 and you leave the `channel_1` default, your data will land under the wrong Redis keys and OPC UA nodes. To ingest both channels at once, run a second `udpparser` service in `compose.yaml` with its own port and `UDP_CHANNEL_NAME=channel_2`. See [Setup & Deployment](docs/setup.md#channel-selection-required) for details.
+
 ---
 
 ## Instrument Setup (tec5 / Sartorius)
 
-1. Ensure the spectrometer host computer is connected to the same local subnet as the server.
-2. In the tec5 / tecSaaS MPT configuration, configure UDP broadcast transmission to target the IP of this server on port `20202`.
-3. If running `MPTTrayApplication` on the Windows spectrometer PC, it will automatically monitor and maintain the tec5 MPT measurement session in the background.
+The recommended deployment runs this entire stack (via Docker Desktop) on the same Windows PC that runs the tec5 tecSaaS MPT software and is physically connected to the spectrometer — see [MPT Guardian's architecture note](tray_app/README.md#architecture) for why. Only the OPC UA port needs to be reachable from elsewhere on the network.
+
+1. In the tec5 / tecSaaS MPT configuration, configure UDP broadcast transmission to target `127.0.0.1` (loopback) on port `20202`, since `udpparser` runs on this same PC. If you're instead running the Docker stack on a separate host, target that host's IP on the same subnet.
+2. Install [MPT Guardian](tray_app/README.md) on this same PC — either via the installer or by running the included `.exe` directly, no build step required — so it can automatically monitor and restart the tec5 MPT measurement session in the background.
+
+> **Sessions longer than ~6 hours require MPT Guardian.** The tec5 tecSaaS MPT software intermittently stops transmitting UDP data on its own during extended runs. Without MPT Guardian running on the spectrometer PC to catch and restart it, a long-running deployment will silently go stale with no automatic recovery. It's optional for short test/demo sessions only.
 
 ---
 
