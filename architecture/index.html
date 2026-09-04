@@ -479,10 +479,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-container-microservices-stack" class="md-nav__link">
+  <a href="#4-container-microservices-stack" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3-Container Microservices Stack
+        4-Container Microservices Stack
       
     </span>
   </a>
@@ -528,6 +528,17 @@
     <span class="md-ellipsis">
       
         3. Industrial Publication (opcserver)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-session-watchdog-udphelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Session Watchdog (udphelper)
       
     </span>
   </a>
@@ -754,14 +765,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/parsing-spectra/" class="md-nav__link">
+      <a href="../api/watchdog/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Binary File Parser
+    Watchdog Service
   
 
     
@@ -861,44 +872,18 @@
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p>The BioPAT® Spectro UV Server is designed around a decoupled, microservices architecture using <strong>Docker Compose</strong> and <strong>Redis</strong> as a real-time in-memory message bus.</p>
 <hr />
-<h2 id="3-container-microservices-stack">3-Container Microservices Stack<a class="headerlink" href="#3-container-microservices-stack" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────┐
-│        Sartorius BioPAT® Spectro UV / tec5 Spectrometer         │
-│          Broadcasts 840-byte UDP Packets (Default: 20202)       │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │ UDP Broadcast
-                                 ▼
- ┌───────────────────────────────────────────────────────────────┐
- │                   Docker Compose Stack                        │
- │                                                               │
- │  ┌──────────────────────┐  JSON Arrays  ┌──────────────────┐  │
- │  │   (ii) udpparser     ├──────────────►│ (i) redisserver  │  │
- │  │   - Binds :20202/udp │  Cache &amp; TTL  │ - Redis 7 Alpine │  │
- │  │   - Unpacks 201 pts  │               │ - Port :6379     │  │
- │  └──────────────────────┘               └────────┬─────────┘  │
- │                                                  │            │
- │                                                  │ 1 Hz Poll  │
- │                                                  ▼            │
- │                                         ┌──────────────────┐  │
- │                                         │ (iii) opcserver  │  │
- │                                         │ - Port :4841     │  │
- │                                         │ - 201-pt Arrays  │  │
- │                                         └────────┬─────────┘  │
- └──────────────────────────────────────────────────┼────────────┘
-                                                    │
-                                                    ▼
-                                   SCADA / Bioreactor Controllers
-                                   (opc.tcp://&lt;host&gt;:4841)
-</code></pre></div>
+<h2 id="4-container-microservices-stack">4-Container Microservices Stack<a class="headerlink" href="#4-container-microservices-stack" title="Permanent link">&para;</a></h2>
+<p><img alt="Architecture diagram: the tec5 spectrometer connects to the vendor tecSaaS MPT software, which broadcasts UDP datagrams to a Docker Compose stack of udpparser, redisserver, udphelper, and opcserver — all running on the same host PC — which publishes to SCADA and signals the Windows Tray App directly via Redis." src="../assets/architecture.svg" /></p>
 <hr />
 <h2 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">&para;</a></h2>
 <h3 id="1-ingestion-udpparser">1. Ingestion (<code>udpparser</code>)<a class="headerlink" href="#1-ingestion-udpparser" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Binds to <code>0.0.0.0:20202</code> (UDP).</li>
-<li>Receives 840-byte datagrams from the spectrometer.</li>
+<li>Receives 840-byte datagrams from the <strong>tec5 tecSaaS MPT software</strong> — the vendor application that drives the spectrometer and does the actual UDP broadcasting (the spectrometer hardware itself has no network interface here). Every acquisition cycle sends up to 5 of these datagrams, one per data type (sample, onlinereference, transmission, absorbance, calibration).</li>
 <li>Parses the 36-byte header: verifies length (840), extracts point count (201), wavelength bounds (190.0–390.0 nm), and data type code.</li>
 <li>Unpacks 201 float32 values.</li>
 <li>Writes JSON arrays into Redis with a 5-second TTL (<code>ex=5</code>) to prevent stale measurements if transmission ceases.</li>
+<li><strong>Channel assignment is manual, not auto-detected.</strong> The packet header does carry a channel index (bytes 18–19, see below), but <code>udpparser</code> never reads it — every value it writes is tagged with whatever <code>UDP_CHANNEL_NAME</code> is set to in <code>compose.yaml</code>/<code>.env</code> (<code>channel_1</code> by default). Setting this correctly for your actual wiring is required; see <a href="../setup/#channel-selection-required">Setup &amp; Deployment</a>.</li>
 </ul>
 <h3 id="2-state-message-bus-redisserver">2. State &amp; Message Bus (<code>redisserver</code>)<a class="headerlink" href="#2-state-message-bus-redisserver" title="Permanent link">&para;</a></h3>
 <ul>
@@ -910,6 +895,14 @@
 <li>Hosts standard OPC UA server on port 4841 (<code>opc.tcp://0.0.0.0:4841</code>).</li>
 <li>Namespace: <code>http://biopat/spectrouv</code>.</li>
 <li>Updates writable variables for each channel every 1 second.</li>
+</ul>
+<h3 id="4-session-watchdog-udphelper">4. Session Watchdog (<code>udphelper</code>)<a class="headerlink" href="#4-session-watchdog-udphelper" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Polls the <code>absorbance_channel_1</code> key in Redis once per second.</li>
+<li>If the key is missing (expired TTL, meaning no fresh UDP data), sets <code>mpt_refresh = "true"</code> in Redis and logs a warning.</li>
+<li>Re-arms itself once fresh absorbance data reappears, so it can raise the flag again if data goes stale a second time. The <code>mpt_refresh</code> key itself is cleared by the tray application after it finishes handling the restart.</li>
+<li>Has no direct network exposure — it only communicates via Redis. The <code>mpt_refresh</code> key is polled by the <a href="../tray_app/README.md">MPT Guardian tray companion</a>, which reacts by restarting the tec5 measurement session. MPT Guardian, tecSaaS MPT, and this whole Docker Compose stack all run on the same Windows PC in the recommended deployment (via Docker Desktop) — Guardian talks to <code>redisserver</code> over <code>localhost</code>, not over the network.</li>
+<li>MPT Guardian is optional for short test sessions, but <strong>mandatory for any session longer than ~6 hours</strong> — the tec5 tecSaaS MPT software intermittently stops transmitting UDP data on its own over long runs, and this watchdog/tray-app pair is the only thing that detects and recovers from it automatically. Without MPT Guardian installed, <code>absorbance_channel_1</code> simply stays stale with no automatic recovery.</li>
 </ul>
 <hr />
 <h2 id="udp-packet-structure-840-bytes">UDP Packet Structure (840 Bytes)<a class="headerlink" href="#udp-packet-structure-840-bytes" title="Permanent link">&para;</a></h2>

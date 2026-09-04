@@ -754,14 +754,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/parsing-spectra/" class="md-nav__link">
+      <a href="../api/watchdog/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Binary File Parser
+    Watchdog Service
   
 
     
@@ -859,7 +859,7 @@
 
 <h1 id="user-guide">User Guide<a class="headerlink" href="#user-guide" title="Permanent link">&para;</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>This guide explains how to operate the BioPAT® Spectro UV Server, configure spectrometer UDP broadcasts, and consume live 201-wavelength data in industrial SCADA and PAT platforms.</p>
+<p>This guide explains how to operate the BioPAT® Spectro UV Server, configure the tecSaaS MPT UDP broadcast, and consume live 201-wavelength data in industrial SCADA and PAT platforms.</p>
 <hr />
 <h2 id="the-201-wavelength-uv-spectrum">The 201-Wavelength UV Spectrum<a class="headerlink" href="#the-201-wavelength-uv-spectrum" title="Permanent link">&para;</a></h2>
 <p>The spectrometer measures optical signals from <strong>190.0 nm to 390.0 nm in 1.0 nm increments</strong>, yielding an array of exactly <strong>201 float32 values</strong>:</p>
@@ -871,7 +871,7 @@
 </code></pre></div>
 <hr />
 <h2 id="data-types">Data Types<a class="headerlink" href="#data-types" title="Permanent link">&para;</a></h2>
-<p>The spectrometer emits several spectral data types, each mapped to a specific tec5 type identifier:</p>
+<p>For each acquisition cycle, the tec5 tecSaaS MPT software (driving the spectrometer) broadcasts 5 separate 840-byte UDP datagrams — one per data type below, each mapped to a specific tec5 type identifier:</p>
 <table>
 <thead>
 <tr>
@@ -921,12 +921,13 @@
 <tr>
 <td style="text-align: left;"><strong>Wavelengths</strong></td>
 <td style="text-align: center;">Axis</td>
-<td style="text-align: left;"><code>wavelengths_channel_1</code></td>
+<td style="text-align: left;"><em>(not stored in Redis — computed by <code>opcserver</code>)</em></td>
 <td style="text-align: left;"><code>Wavelength</code></td>
 <td style="text-align: left;">Axis array <code>[190.0, 191.0, ..., 390.0]</code></td>
 </tr>
 </tbody>
 </table>
+<p>The <code>_channel_1</code> suffix above comes from <code>udpparser</code>'s <code>UDP_CHANNEL_NAME</code> setting, <strong>not</strong> from the packet itself — <code>udpparser</code> doesn't read the channel index in the UDP header, so this is a manual choice in <code>compose.yaml</code>/<code>.env</code>. If your instrument is wired to channel 2, set <code>UDP_CHANNEL_NAME=channel_2</code> and all the keys/tags above become <code>..._channel_2</code> instead. See <a href="../setup/#channel-selection-required">Setup &amp; Deployment</a>.</p>
 <hr />
 <h2 id="connecting-opc-ua-clients">Connecting OPC UA Clients<a class="headerlink" href="#connecting-opc-ua-clients" title="Permanent link">&para;</a></h2>
 <p>The OPC UA server listens on <code>opc.tcp://&lt;host&gt;:4841</code> under namespace index <code>1</code> (<code>http://biopat/spectrouv</code>).</p>

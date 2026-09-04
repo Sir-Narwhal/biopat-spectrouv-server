@@ -27,7 +27,7 @@
     
     
       
-        <title>Binary File Parser - BioPAT® Spectro UV Documentation</title>
+        <title>Watchdog Service - BioPAT® Spectro UV Documentation</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#spectral-parser-api" class="md-skip">
+        <a href="#watchdog-service-api" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Binary File Parser
+              Watchdog Service
             
           </span>
         </div>
@@ -645,7 +645,7 @@
   <span class="md-ellipsis">
     
   
-    Binary File Parser
+    Watchdog Service
   
 
     
@@ -663,7 +663,7 @@
   <span class="md-ellipsis">
     
   
-    Binary File Parser
+    Watchdog Service
   
 
     
@@ -689,10 +689,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#module-parselibraryparsing_spectra" class="md-nav__link">
+  <a href="#module-parselibraryspectrouv_helper" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Module: parselibrary.parsing_spectra
+        Module: parselibrary.spectrouv_helper
       
     </span>
   </a>
@@ -700,15 +700,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#function-parsebinary" class="md-nav__link">
+  <a href="#function-watchdog_cycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Function: parsebinary()
+        Function: watchdog_cycle()
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Function: parsebinary()">
+    <nav class="md-nav" aria-label="Function: watchdog_cycle()">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -745,10 +745,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#raises" class="md-nav__link">
+  <a href="#behavior" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Raises
+        Behavior
       
     </span>
   </a>
@@ -756,10 +756,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#file-format-requirements" class="md-nav__link">
+  <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        File Format Requirements
+        Configuration
       
     </span>
   </a>
@@ -767,104 +767,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Examples
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#basic-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Basic Usage
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#error-handling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Error Handling
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#processing-multiple-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Processing Multiple Files
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#integration-with-opc-ua" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Integration with OPC UA
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Performance Notes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#wavelength-mapping" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Wavelength Mapping
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#data-type-details" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Data Type Details
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#related-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Related Functions
+        Example
       
     </span>
   </a>
@@ -978,160 +884,74 @@
   
 
 
-<h1 id="spectral-parser-api">Spectral Parser API<a class="headerlink" href="#spectral-parser-api" title="Permanent link">&para;</a></h1>
-<h2 id="module-parselibraryparsing_spectra">Module: <code>parselibrary.parsing_spectra</code><a class="headerlink" href="#module-parselibraryparsing_spectra" title="Permanent link">&para;</a></h2>
-<p>This module provides functions for parsing binary UV-Vis spectral data files.</p>
+<h1 id="watchdog-service-api">Watchdog Service API<a class="headerlink" href="#watchdog-service-api" title="Permanent link">&para;</a></h1>
+<h2 id="module-parselibraryspectrouv_helper">Module: <code>parselibrary.spectrouv_helper</code><a class="headerlink" href="#module-parselibraryspectrouv_helper" title="Permanent link">&para;</a></h2>
+<p>This module implements a lightweight Redis watchdog that detects when live spectral data has gone stale and signals the optional <a href="../../tray_app/README.md">Windows tray companion</a> to restart the spectrometer's measurement session. It runs as the <code>udphelper</code> container in the Docker Compose stack.</p>
 <hr />
-<h2 id="function-parsebinary">Function: <code>parsebinary()</code><a class="headerlink" href="#function-parsebinary" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parsebinary</span><span class="p">(</span><span class="n">binfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<h2 id="function-watchdog_cycle">Function: <code>watchdog_cycle()</code><a class="headerlink" href="#function-watchdog_cycle" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">watchdog_cycle</span><span class="p">(</span><span class="n">r_spectrouv</span><span class="p">:</span> <span class="n">Redis</span><span class="p">,</span> <span class="n">set_mptrefresh</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 </code></pre></div>
 <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h3>
-<p>Parse a binary spectral data file (.bin) and extract absorption values.</p>
-<p>Reads a binary file containing UV-Vis spectral data with magic byte markers, validates file integrity, skips metadata, and extracts floating-point absorption values for wavelengths in the UV range (190-391 nm).</p>
+<p>Runs a single watchdog check and returns the updated <code>set_mptrefresh</code> flag for the caller to pass into the next cycle.</p>
 <h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><strong><code>binfile: str</code></strong>
-- Absolute path to the binary .bin file to parse
-- Example: <code>"/data/spectra/spectrum_001.bin"</code></p>
+<p><strong><code>r_spectrouv: Redis</code></strong>
+- An active Redis connection
+- Must have <code>decode_responses=True</code> for string operations</p>
+<p><strong><code>set_mptrefresh: bool</code></strong>
+- Tracks whether a refresh has already been requested for the current stale period, so the flag is only raised once per outage
+- Pass <code>False</code> on the first call</p>
 <h3 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h3>
-<p><strong><code>Tuple[float, ...]</code></strong>
-- Tuple of 201 floating-point numbers representing absorption values
-- Index maps to wavelength: <code>wavelength_nm = 190 + index</code>
-- Values are unitless absorption coefficients (typically 0.0 to 2.5)</p>
-<h3 id="raises">Raises<a class="headerlink" href="#raises" title="Permanent link">&para;</a></h3>
-<p><strong><code>ValueError</code></strong>
-- Raised if file does not have correct magic byte markers (0xEFBEADDE) at start and end
-- Indicates corrupted, incomplete, or incorrect file format
-- Message: <code>"Bad file markers"</code></p>
-<p><strong><code>FileNotFoundError</code></strong>
-- Raised if the specified file does not exist</p>
-<p><strong><code>IOError</code></strong>
-- Raised if file cannot be read due to permissions or I/O errors</p>
-<h3 id="file-format-requirements">File Format Requirements<a class="headerlink" href="#file-format-requirements" title="Permanent link">&para;</a></h3>
-<p>Input file must follow exact binary format:</p>
-<div class="highlight"><pre><span></span><code>Byte Range    Size    Content
-────────────────────────────────────
-0-3           4       Magic marker: 0xEFBEADDE
-4-79          76      Metadata (file header, not parsed)
-80-883        804     Spectral data (201 × 4-byte float32, little-endian)
-884-887       4       Magic marker: 0xEFBEADDE
-
-Total:        888 bytes
-</code></pre></div>
-<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
-<h4 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">parselibrary.parsing_spectra</span><span class="w"> </span><span class="kn">import</span> <span class="n">parsebinary</span>
-
-<span class="c1"># Parse a spectrum file</span>
-<span class="n">spectrum</span> <span class="o">=</span> <span class="n">parsebinary</span><span class="p">(</span><span class="s2">"/data/sample_001.bin"</span><span class="p">)</span>
-
-<span class="c1"># Access wavelength data</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"190 nm: </span><span class="si">{</span><span class="n">spectrum</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>     <span class="c1"># First value</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"290 nm: </span><span class="si">{</span><span class="n">spectrum</span><span class="p">[</span><span class="mi">100</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>   <span class="c1"># Middle value</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"390 nm: </span><span class="si">{</span><span class="n">spectrum</span><span class="p">[</span><span class="mi">200</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>   <span class="c1"># Last value</span>
-</code></pre></div>
-<h4 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">parselibrary.parsing_spectra</span><span class="w"> </span><span class="kn">import</span> <span class="n">parsebinary</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">spectrum</span> <span class="o">=</span> <span class="n">parsebinary</span><span class="p">(</span><span class="s2">"/data/corrupted.bin"</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"File not found"</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid spectrum file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</code></pre></div>
-<h4 id="processing-multiple-files">Processing Multiple Files<a class="headerlink" href="#processing-multiple-files" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">parselibrary.parsing_spectra</span><span class="w"> </span><span class="kn">import</span> <span class="n">parsebinary</span>
-
-<span class="n">spectrum_dir</span> <span class="o">=</span> <span class="s2">"/data/spectra"</span>
-<span class="n">spectra</span> <span class="o">=</span> <span class="p">{}</span>
-
-<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">spectrum_dir</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'.bin'</span><span class="p">):</span>
-        <span class="k">continue</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spectrum_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-        <span class="n">spectrum</span> <span class="o">=</span> <span class="n">parsebinary</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">spectra</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectrum</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✓ Loaded </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"✗ Failed </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">spectra</span><span class="p">)</span><span class="si">}</span><span class="s2"> spectra"</span><span class="p">)</span>
-</code></pre></div>
-<h4 id="integration-with-opc-ua">Integration with OPC UA<a class="headerlink" href="#integration-with-opc-ua" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">redis</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">parselibrary.parsing_spectra</span><span class="w"> </span><span class="kn">import</span> <span class="n">parsebinary</span>
-
-<span class="c1"># Parse and publish to Redis for OPC UA server</span>
-<span class="n">spectrum</span> <span class="o">=</span> <span class="n">parsebinary</span><span class="p">(</span><span class="s2">"/data/sample.bin"</span><span class="p">)</span>
-
-<span class="c1"># Store as JSON for Redis</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">(</span><span class="n">decode_responses</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">r</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"transmission_channel_1"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)))</span>
-
-<span class="c1"># OPC UA server will read this and publish via OPC UA</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Spectrum published to Redis"</span><span class="p">)</span>
-</code></pre></div>
-<h3 id="performance-notes">Performance Notes<a class="headerlink" href="#performance-notes" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Parsing time:</strong> ~1-5 ms per file (single-threaded)</li>
-<li><strong>Memory usage:</strong> ~2 KB per spectrum tuple (201 floats)</li>
-<li><strong>Throughput:</strong> Can parse ~100-200 files/second with asyncio</li>
-</ul>
-<h3 id="wavelength-mapping">Wavelength Mapping<a class="headerlink" href="#wavelength-mapping" title="Permanent link">&para;</a></h3>
-<p>The returned tuple maps directly to wavelengths:</p>
+<p><strong><code>bool</code></strong>
+- The updated <code>set_mptrefresh</code> state to pass into the next call</p>
+<h3 id="behavior">Behavior<a class="headerlink" href="#behavior" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Reads the <code>absorbance_channel_1</code> key from Redis.</li>
+<li>If the key is missing (expired TTL — no fresh UDP data in the last 5 seconds) and a refresh hasn't already been requested, sets <code>mpt_refresh = "true"</code> in Redis, logs a warning, and marks <code>set_mptrefresh = True</code>.</li>
+<li>If the key is present, logs the point count at DEBUG level and resets <code>set_mptrefresh = False</code>, re-arming the watchdog so it can raise the flag again if data goes stale a second time.</li>
+<li>Sleeps 1 second before returning.</li>
+</ol>
+<p>Note that <code>watchdog_cycle</code> only ever <em>sets</em> <code>mpt_refresh</code> to <code>"true"</code> — it never clears it back to <code>"false"</code>. The tray application is responsible for clearing the key once it has handled the refresh.</p>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
+<p>Configured via environment variables (see <a href="../../setup/">Setup &amp; Deployment</a>):</p>
 <table>
 <thead>
 <tr>
-<th>Index</th>
-<th>Wavelength (nm)</th>
+<th>Variable</th>
+<th>Default</th>
+<th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>0</td>
-<td>190</td>
+<td><code>REDIS_IP_ADDRESS</code></td>
+<td><code>localhost</code></td>
+<td>Redis host (<code>redisserver</code> inside Docker Compose)</td>
 </tr>
 <tr>
-<td>1</td>
-<td>191</td>
-</tr>
-<tr>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr>
-<td>100</td>
-<td>290</td>
-</tr>
-<tr>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr>
-<td>200</td>
-<td>390</td>
+<td><code>REDIS_PORT_NUMBER</code></td>
+<td><code>6379</code></td>
+<td>Redis port</td>
 </tr>
 </tbody>
 </table>
-<h3 id="data-type-details">Data Type Details<a class="headerlink" href="#data-type-details" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Values:</strong> Single-precision floating-point (32-bit)</li>
-<li><strong>Byte order:</strong> Little-endian (standard Intel/x86)</li>
-<li><strong>Range:</strong> Typically 0.0 to 2.5 (absorption coefficient)</li>
-<li><strong>Precision:</strong> ~6 significant decimal digits</li>
-</ul>
-<h3 id="related-functions">Related Functions<a class="headerlink" href="#related-functions" title="Permanent link">&para;</a></h3>
-<ul>
-<li><a href="../opcua-server/"><code>opcua_server.opcua_loop()</code></a> — Publishes parsed spectra via OPC UA</li>
-</ul>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">Redis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">parselibrary.spectrouv_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">watchdog_cycle</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">Redis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">"localhost"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">decode_responses</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">set_mptrefresh</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">set_mptrefresh</span> <span class="o">=</span> <span class="k">await</span> <span class="n">watchdog_cycle</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">set_mptrefresh</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
 <h3 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a href="../../guide/">User Guide</a> — Workflow examples</li>
-<li><a href="../../troubleshooting/">Troubleshooting</a> — Common troubleshooting issues</li>
+<li><a href="../opcua-server/">OPC UA Server</a> — Publishes the same <code>absorbance_channel_1</code> data this watchdog monitors</li>
+<li><a href="../../tray_app/README.md">Windows Tray Companion</a> — Consumes the <code>mpt_refresh</code> signal key</li>
+<li><a href="../../architecture/">Architecture</a> — System data flow</li>
 </ul>
 
 

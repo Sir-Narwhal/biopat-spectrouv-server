@@ -556,6 +556,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#channel-selection-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Channel Selection (Required)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#launching-services" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -568,6 +579,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#windows-tray-app-long-running-deployments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Windows Tray App (Long-Running Deployments)
+      
+    </span>
+  </a>
   
 </li>
       
@@ -732,14 +754,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/parsing-spectra/" class="md-nav__link">
+      <a href="../api/watchdog/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Binary File Parser
+    Watchdog Service
   
 
     
@@ -857,6 +879,17 @@
 <span class="na">REDIS_IP_ADDRESS</span><span class="o">=</span><span class="s">redisserver</span>
 <span class="na">REDIS_PORT_NUMBER</span><span class="o">=</span><span class="s">6379</span>
 </code></pre></div></p>
+<h3 id="channel-selection-required">Channel Selection (Required)<a class="headerlink" href="#channel-selection-required" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>[!IMPORTANT]
+<code>UDP_CHANNEL_NAME</code> is <strong>not</strong> read from the incoming UDP packets — <code>udpparser</code> never inspects the channel index in the packet header (bytes 18–19). It's decided entirely by this environment variable, so you must set it to match your actual spectrometer wiring:</p>
+<ul>
+<li>Wired to <strong>channel 1</strong>: leave <code>UDP_CHANNEL_NAME=channel_1</code> (the default).</li>
+<li>Wired to <strong>channel 2</strong>: set <code>UDP_CHANNEL_NAME=channel_2</code> in <code>.env</code> before starting the stack.</li>
+<li><strong>Both channels simultaneously</strong>: add a second <code>udpparser</code> service to <code>compose.yaml</code> (duplicate the existing one) with its own <code>UDP_PORT</code> and <code>UDP_CHANNEL_NAME=channel_2</code>, and configure tecSaaS MPT to send that channel's UDP broadcast to the second port.</li>
+</ul>
+<p>Getting this wrong doesn't error — it silently labels your data under the wrong channel's Redis keys and OPC UA nodes, so verify it explicitly rather than trusting the default.</p>
+</blockquote>
 <h3 id="launching-services">Launching Services<a class="headerlink" href="#launching-services" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Start in background</span>
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
@@ -864,10 +897,15 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <span class="c1"># View logs</span>
 docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>udpparser
 docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>opcserver
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>udphelper
 
 <span class="c1"># Stop services</span>
 docker<span class="w"> </span>compose<span class="w"> </span>down
 </code></pre></div>
+<hr />
+<h2 id="windows-tray-app-long-running-deployments">Windows Tray App (Long-Running Deployments)<a class="headerlink" href="#windows-tray-app-long-running-deployments" title="Permanent link">&para;</a></h2>
+<p>The <a href="../tray_app/README.md">MPT Guardian tray application</a> is optional for short test sessions, but <strong>mandatory for any measurement session longer than ~6 hours</strong> — the tec5 tecSaaS MPT software intermittently stops transmitting UDP data on its own over extended runs, and MPT Guardian is what detects and restarts it. Install it via the installer, or run the included <code>.exe</code> directly with no build/install step.</p>
+<p>MPT Guardian must run on the <strong>same Windows PC</strong> as the tec5 tecSaaS MPT software and this Docker Compose stack — it talks to <code>redisserver</code> over <code>localhost</code> and drives tecSaaS MPT via Windows UI Automation on the same desktop session, so it can't be split off onto a separate machine. In practice this means: when MPT Guardian is in use, deploy the whole stack via Docker Desktop on that same PC rather than on a separate Linux host.</p>
 <hr />
 <h2 id="port-mappings">Port Mappings<a class="headerlink" href="#port-mappings" title="Permanent link">&para;</a></h2>
 <p>Ensure the following firewall ports are open on the server host:</p>
@@ -885,7 +923,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>down
 <td style="text-align: left;"><code>20202</code></td>
 <td style="text-align: center;">UDP</td>
 <td style="text-align: left;"><code>udpparser</code></td>
-<td style="text-align: left;">Receives spectrometer UDP broadcast</td>
+<td style="text-align: left;">Receives UDP broadcast from tecSaaS MPT</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>4841</code></td>
@@ -901,6 +939,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>down
 </tr>
 </tbody>
 </table>
+<p>The <code>udphelper</code> (watchdog) service exposes no ports — it only talks to <code>redisserver</code> over the internal Docker network.</p>
 
 
 

@@ -678,8 +678,30 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#main_loopr-redis-udp-socketsocket-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        main_loop(r: Redis, udp: socket.socket) -&gt; None
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
   
 </li>
         
@@ -732,14 +754,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../parsing-spectra/" class="md-nav__link">
+      <a href="../watchdog/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Binary File Parser
+    Watchdog Service
   
 
     
@@ -837,22 +859,62 @@
 
 <h1 id="udp-parser-service-api">UDP Parser Service API<a class="headerlink" href="#udp-parser-service-api" title="Permanent link">&para;</a></h1>
 <h2 id="module-parselibraryudp_parser">Module: <code>parselibrary.udp_parser</code><a class="headerlink" href="#module-parselibraryudp_parser" title="Permanent link">&para;</a></h2>
-<p>The UDP Parser service receives, validates, and decodes incoming 840-byte UDP spectral broadcast datagrams from the spectrometer.</p>
+<p>The UDP Parser service receives, validates, and decodes incoming 840-byte UDP spectral broadcast datagrams from the tec5 tecSaaS MPT software (the vendor control application, not the spectrometer hardware itself — see <a href="../../architecture/">Architecture</a>). Each acquisition cycle sends up to 5 separate 840-byte datagrams, one per data type (sample, onlinereference, transmission, absorbance, calibration).</p>
 <h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
 <h4 id="unpack_udpbinary_string-bytes-listfloat"><code>unpack_udp(binary_string: bytes) -&gt; List[float]</code><a class="headerlink" href="#unpack_udpbinary_string-bytes-listfloat" title="Permanent link">&para;</a></h4>
 <p>Extracts the 201 float32 values from an incoming 840-byte datagram payload.</p>
 <h4 id="collect_mpt_spectraudp-socketsocket-dictstr-listfloat"><code>collect_mpt_spectra(udp: socket.socket) -&gt; Dict[str, List[float]]</code><a class="headerlink" href="#collect_mpt_spectraudp-socketsocket-dictstr-listfloat" title="Permanent link">&para;</a></h4>
-<p>Reads datagrams from the UDP socket and maps tec5 packet type integers to spectral identifiers:
-- Type 4 $
-ightarrow$ <code>sample</code> (Sample Intensity)
-- Type 5 $
-ightarrow$ <code>onlinereference</code> (Reference Intensity)
-- Type 7 $
-ightarrow$ <code>transmission</code>
-- Type 9 $
-ightarrow$ <code>absorbance</code>
-- Type 11 $
-ightarrow$ <code>calibration</code></p>
+<p>Reads a batch of datagrams from the UDP socket and maps tec5 packet type integers to spectral identifiers:
+- Type 4 → <code>sample</code> (Sample Intensity)
+- Type 5 → <code>onlinereference</code> (Reference Intensity)
+- Type 7 → <code>transmission</code>
+- Type 9 → <code>absorbance</code>
+- Type 11 → <code>calibration</code></p>
+<p>Skips control datagrams (144 or 72 bytes) and any packet that isn't exactly 840 bytes or doesn't carry a recognized type.</p>
+<h4 id="main_loopr-redis-udp-socketsocket-none"><code>main_loop(r: Redis, udp: socket.socket) -&gt; None</code><a class="headerlink" href="#main_loopr-redis-udp-socketsocket-none" title="Permanent link">&para;</a></h4>
+<p>Runs one ingestion cycle: calls <code>collect_mpt_spectra</code>, then writes each spectral array to Redis as <code>{type}_{UDP_CHANNEL_NAME}</code> with a 5-second TTL (<code>ex=5</code>). <code>sample</code> is also mirrored to <code>intensity_{channel}</code> and <code>onlinereference</code> to <code>reference_intensity_{channel}</code> for more intuitive SCADA tag names.</p>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
+<p>Configured via environment variables (see <a href="../../setup/">Setup &amp; Deployment</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UDP_IP</code></td>
+<td><code>0.0.0.0</code></td>
+<td>Listen address for spectrometer UDP datagrams</td>
+</tr>
+<tr>
+<td><code>UDP_PORT</code></td>
+<td><code>20202</code></td>
+<td>Port receiving tec5 UDP broadcasts</td>
+</tr>
+<tr>
+<td><code>UDP_CHANNEL_NAME</code></td>
+<td><code>channel_1</code></td>
+<td>Redis key suffix identifying this channel</td>
+</tr>
+<tr>
+<td><code>REDIS_IP_ADDRESS</code></td>
+<td><code>localhost</code></td>
+<td>Redis host (<code>redisserver</code> inside Docker Compose)</td>
+</tr>
+<tr>
+<td><code>REDIS_PORT_NUMBER</code></td>
+<td><code>6379</code></td>
+<td>Redis port</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!IMPORTANT]
+<strong><code>UDP_CHANNEL_NAME</code> is not auto-detected — you must set it manually.</strong> Every tec5 UDP packet does carry a channel index in its header (byte offset 18–19, see <a href="../../architecture/#udp-packet-structure-840-bytes">Architecture</a>), but <code>collect_mpt_spectra</code>/<code>unpack_udp</code> never read it. The channel a given <code>udpparser</code> instance writes to is decided <em>entirely</em> by this environment variable. If your spectrometer is wired to channel 2 and you leave <code>UDP_CHANNEL_NAME</code> at its <code>channel_1</code> default, the data will silently land under <code>..._channel_1</code> keys — verify this setting in <code>compose.yaml</code>/<code>.env</code> for your actual hardware before trusting any channel-tagged data. To ingest both channels simultaneously, run a second <code>udpparser</code> instance (a duplicated Compose service) with <code>UDP_CHANNEL_NAME=channel_2</code> and a distinct <code>UDP_PORT</code>.</p>
+</blockquote>
 
 
 

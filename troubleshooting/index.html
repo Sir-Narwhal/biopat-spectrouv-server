@@ -622,14 +622,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/parsing-spectra/" class="md-nav__link">
+      <a href="../api/watchdog/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Binary File Parser
+    Watchdog Service
   
 
     
@@ -851,6 +851,62 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#5-data-stops-after-several-hours-long-running-sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Data Stops After Several Hours (Long-Running Sessions)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Data Stops After Several Hours (Long-Running Sessions)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue-spectral-data-was-flowing-fine-then-silently-went-stale-hours-into-a-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Spectral data was flowing fine, then silently went stale hours into a run
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-data-appears-under-the-wrong-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Data Appears Under the Wrong Channel
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Data Appears Under the Wrong Channel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue-values-show-up-under-_channel_1-or-_channel_2-when-you-expected-the-other" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Values show up under ..._channel_1 (or _channel_2) when you expected the other
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -895,7 +951,7 @@
 1. The spectrometer host PC is sending UDP packets to a different IP or port.
 2. A firewall is blocking UDP port <code>20202</code>.</p>
 <p><strong>Solutions:</strong>
-- Verify the spectrometer PC is configured to send UDP packets to the IP of the server on port <code>20202</code>.
+- In the recommended single-PC deployment, verify tecSaaS MPT is configured to send UDP packets to <code>127.0.0.1</code> (loopback) on port <code>20202</code>, since <code>udpparser</code> runs on this same machine. If you're instead running the Docker stack on a separate host, verify it's targeting that host's IP on the same subnet.
 - Check if port 20202 is open and listening:
   <div class="highlight"><pre><span></span><code><span class="c1"># Windows</span>
 netstat<span class="w"> </span>-ano<span class="w"> </span><span class="p">|</span><span class="w"> </span>findstr<span class="w"> </span>:20202
@@ -947,6 +1003,32 @@ ss<span class="w"> </span>-ulpn<span class="w"> </span><span class="p">|</span><
 </code></pre></div>
 3. Restart Docker Compose:
    <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</code></pre></div></p>
+<hr />
+<h3 id="5-data-stops-after-several-hours-long-running-sessions">5. Data Stops After Several Hours (Long-Running Sessions)<a class="headerlink" href="#5-data-stops-after-several-hours-long-running-sessions" title="Permanent link">&para;</a></h3>
+<h4 id="issue-spectral-data-was-flowing-fine-then-silently-went-stale-hours-into-a-run">Issue: Spectral data was flowing fine, then silently went stale hours into a run<a class="headerlink" href="#issue-spectral-data-was-flowing-fine-then-silently-went-stale-hours-into-a-run" title="Permanent link">&para;</a></h4>
+<p><strong>Cause:</strong> The tec5 tecSaaS MPT software intermittently stops transmitting UDP data on its own during long-running sessions (typically anywhere past ~6 hours). The <code>udphelper</code> watchdog will detect this (it sets <code>mpt_refresh = "true"</code> in Redis), but the Docker stack has no way to act on that signal by itself — something has to restart the tecSaaS MPT measurement session.</p>
+<p><strong>Solution:</strong>
+1. Install and run the <a href="../tray_app/README.md">MPT Guardian tray application</a> — either via the installer or by running the included <code>.exe</code> directly — on the <strong>same Windows PC</strong> that runs tecSaaS MPT and this Docker Compose stack (Guardian can't be split off onto a different machine; see <a href="../tray_app/README.md#architecture">tray_app/README.md</a>). This is <strong>mandatory for any session longer than ~6 hours</strong>; short test/demo sessions can run without it.
+2. Confirm it's running and polling by checking the <code>mpt_refresh</code> key:
+   <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>redisserver<span class="w"> </span>redis-cli<span class="w"> </span>get<span class="w"> </span>mpt_refresh
+</code></pre></div>
+3. If MPT Guardian is already running and the feed is still stale, check its tray icon tooltip for <code>Status: Error</code> (Redis connection lost or state keys missing) and confirm <code>redisserver</code>'s port <code>6379</code> is published to the host (<code>docker compose ps</code>) so Guardian's <code>localhost:6379</code> connection can reach it.</p>
+<hr />
+<h3 id="6-data-appears-under-the-wrong-channel">6. Data Appears Under the Wrong Channel<a class="headerlink" href="#6-data-appears-under-the-wrong-channel" title="Permanent link">&para;</a></h3>
+<h4 id="issue-values-show-up-under-_channel_1-or-_channel_2-when-you-expected-the-other">Issue: Values show up under <code>..._channel_1</code> (or <code>_channel_2</code>) when you expected the other<a class="headerlink" href="#issue-values-show-up-under-_channel_1-or-_channel_2-when-you-expected-the-other" title="Permanent link">&para;</a></h4>
+<p><strong>Cause:</strong> <code>udpparser</code> does <strong>not</strong> read the channel index out of the UDP packet header — it tags every value it writes with whatever <code>UDP_CHANNEL_NAME</code> is set to in <code>compose.yaml</code>/<code>.env</code> (<code>channel_1</code> by default), regardless of what the spectrometer actually sent. This is a manual setting, not an auto-detected one, and there's no error if it's wrong — the data just lands under the wrong keys.</p>
+<p><strong>Solutions:</strong>
+1. Confirm which channel your instrument is actually wired to, then set it explicitly:
+   <div class="highlight"><pre><span></span><code><span class="c1"># .env</span>
+<span class="na">UDP_CHANNEL_NAME</span><span class="o">=</span><span class="s">channel_2</span>
+</code></pre></div>
+2. Restart the stack so <code>udpparser</code> picks up the change:
+   <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</code></pre></div>
+3. To ingest <strong>both</strong> channels at the same time, you need two <code>udpparser</code> instances — duplicate the service in <code>compose.yaml</code> with a different <code>UDP_PORT</code> and <code>UDP_CHANNEL_NAME=channel_2</code>, and point tecSaaS MPT's second channel broadcast at that port.
+4. Verify the fix by checking which key actually has fresh data:
+   <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>redisserver<span class="w"> </span>redis-cli<span class="w"> </span>get<span class="w"> </span>absorbance_channel_2
 </code></pre></div></p>
 
 

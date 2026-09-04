@@ -702,14 +702,14 @@
   
   
     <li class="md-nav__item">
-      <a href="api/parsing-spectra/" class="md-nav__link">
+      <a href="api/watchdog/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Binary File Parser
+    Watchdog Service
   
 
     
@@ -811,18 +811,19 @@
 <h2 id="what-is-biopat-spectro-uv-server">What is BioPAT Spectro UV Server?<a class="headerlink" href="#what-is-biopat-spectro-uv-server" title="Permanent link">&para;</a></h2>
 <p>In industrial biomanufacturing and laboratory bioprocess monitoring, UV-Vis spectrometers capture continuous absorption curves across hundreds of wavelengths. However, standard automation setups usually constrain operators to extracting only 1 to 4 fixed wavelengths for DCS/SCADA historians.</p>
 <p><strong>BioPAT Spectro UV Server unlocks 201 simultaneous wavelengths (190 nm to 390 nm in 1 nm increments)</strong>:
-- <strong>Direct UDP Ingestion</strong>: Captures high-frequency 840-byte UDP broadcasts from the tec5 spectrometer.
-- <strong>Microservices Architecture</strong>: Runs as a 3-container Docker stack (<code>udpparser</code>, <code>redisserver</code>, <code>opcserver</code>).
+- <strong>Direct UDP Ingestion</strong>: Captures high-frequency 840-byte UDP broadcasts from the tec5 tecSaaS MPT software (the vendor control application driving the spectrometer) — 5 datagrams per cycle, one per data type.
+- <strong>Microservices Architecture</strong>: Runs as a 4-container Docker stack (<code>udpparser</code>, <code>redisserver</code>, <code>opcserver</code>, <code>udphelper</code>).
 - <strong>Industrial Standards Compliance</strong>: Publishes full spectral arrays over OPC UA (<code>opc.tcp://&lt;host&gt;:4841</code>) to SCADA, DeltaV, Ignition, or OSIsoft PI.
-- <strong>Hardware-Free Testing</strong>: Includes a mock UDP emitter to simulate full UV-Vis spectra with zero hardware attached.</p>
+- <strong>Hardware-Free Testing</strong>: Includes a mock UDP emitter to simulate full UV-Vis spectra with zero hardware attached.
+- <strong>Automated Recovery</strong>: A Redis watchdog (<code>udphelper</code>) flags stale spectral data so the optional Windows tray companion can restart the spectrometer's measurement session automatically.</p>
 <hr />
 <h2 id="system-quick-links">System Quick Links<a class="headerlink" href="#system-quick-links" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong><a href="architecture/">Architecture</a></strong> — Understand the 3-container design and UDP protocol format</li>
+<li><strong><a href="architecture/">Architecture</a></strong> — Understand the 4-container design and UDP protocol format</li>
 <li><strong><a href="quickstart/">Quick Start</a></strong> — Spin up the Docker stack in under 2 minutes</li>
 <li><strong><a href="setup/">Setup &amp; Deployment</a></strong> — Container configuration and environment variables</li>
 <li><strong><a href="guide/">User Guide</a></strong> — SCADA and OPC UA client integration</li>
-<li><strong><a href="api/udp-parser/">API Reference</a></strong> — Detailed module documentation</li>
+<li><strong><a href="api/udp-parser/">API Reference</a></strong> — Detailed module documentation, including the <a href="api/watchdog/">Watchdog service</a></li>
 <li><strong><a href="troubleshooting/">Troubleshooting</a></strong> — Solutions for network and port issues</li>
 </ul>
 <hr />

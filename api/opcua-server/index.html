@@ -16,7 +16,7 @@
         <link rel="prev" href="../udp-parser/">
       
       
-        <link rel="next" href="../parsing-spectra/">
+        <link rel="next" href="../watchdog/">
       
       
         
@@ -947,14 +947,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../parsing-spectra/" class="md-nav__link">
+      <a href="../watchdog/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Binary File Parser
+    Watchdog Service
   
 
     
@@ -1055,13 +1055,13 @@
 <p>This module implements an OPC UA server that publishes UV-Vis spectral data for real-time access by industrial control systems and SCADA platforms.</p>
 <hr />
 <h2 id="function-opcua_loop">Function: <code>opcua_loop()</code><a class="headerlink" href="#function-opcua_loop" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">opcua_loop</span><span class="p">(</span><span class="n">redis_server</span><span class="p">:</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">opcua_loop</span><span class="p">(</span><span class="n">redis_client</span><span class="p">:</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </code></pre></div>
 <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h3>
 <p>Run the OPC UA server and continuously publish spectral data from Redis to connected SCADA clients.</p>
-<p>Creates an OPC UA server with a BioPal SpectraUV namespace containing two spectrometer channels (spectrouv_1, spectrouv_2). Each channel exposes five spectral data types (transmission, absorbance, reference, sample, calibration) plus a wavelength axis. The server polls Redis every 1 second for updated spectral values and pushes them to OPC UA clients, enabling real-time subscription and monitoring.</p>
+<p>Creates an OPC UA server registered under the <code>http://biopat/spectrouv</code> namespace, containing two spectrometer channels (spectrouv_1, spectrouv_2). Each channel exposes five spectral data types (transmission, absorbance, onlinereference, sample, calibration) plus a read-only wavelength axis and <code>intensity</code>/<code>reference_intensity</code> aliases. The server polls Redis every 1 second for updated spectral values and pushes them to OPC UA clients, enabling real-time subscription and monitoring.</p>
 <h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><strong><code>redis_server: redis.Redis</code></strong>
+<p><strong><code>redis_client: redis.Redis</code></strong>
 - An active Redis connection (authenticated and validated)
 - Port: 6379 (default) or as configured
 - Must have <code>decode_responses=True</code> for string operations
@@ -1075,11 +1075,11 @@
 <ol>
 <li><strong>Initialization</strong> (runs once)</li>
 <li>Creates OPC UA Server instance</li>
-<li>Registers BioPal SpectraUV namespace</li>
+<li>Registers the <code>http://biopat/spectrouv</code> namespace</li>
 <li>Creates two channel objects (spectrouv_1, spectrouv_2)</li>
 <li>For each channel and datatype, creates writable OPC UA variables</li>
 <li>
-<p>Creates read-only wavelength axis variable (190-391 nm)</p>
+<p>Creates read-only wavelength axis variable (190-390 nm, 201 points)</p>
 </li>
 <li>
 <p><strong>Polling Loop</strong> (repeats every 1 second)</p>
@@ -1096,7 +1096,7 @@
 </ol>
 <h3 id="data-model">Data Model<a class="headerlink" href="#data-model" title="Permanent link">&para;</a></h3>
 <h4 id="opc-ua-namespace-structure">OPC UA Namespace Structure<a class="headerlink" href="#opc-ua-namespace-structure" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>ns=1 (BioPal SpectraUV)
+<div class="highlight"><pre><span></span><code>ns=1 (http://biopat/spectrouv)
 ├── spectrouv_1 (Object)
 │   ├── transmission_channel_1 (Variable, 201 floats)
 │   ├── absorbance_channel_1 (Variable, 201 floats)
@@ -1152,7 +1152,7 @@
 </table>
 <h4 id="wavelength-axis">Wavelength Axis<a class="headerlink" href="#wavelength-axis" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>201 values</strong> from 190.0 to 390.0 nm</li>
+<li><strong>201 values</strong> from 190.0 to 390.0 nm (inclusive)</li>
 <li><strong>Spacing:</strong> 1.0 nm between consecutive values</li>
 <li><strong>Read-only:</strong> Cannot be modified via OPC UA clients</li>
 </ul>
@@ -1186,7 +1186,7 @@ onlinereference_channel_1
 </table>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
 <p>Configuration is via environment variables:</p>
-<div class="highlight"><pre><span></span><code><span class="n">REDIS_IP_ADDRESS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"REDIS_IP_ADDRESS"</span><span class="p">,</span> <span class="s2">"10.20.20.11"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">REDIS_IP_ADDRESS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"REDIS_IP_ADDRESS"</span><span class="p">,</span> <span class="s2">"localhost"</span><span class="p">)</span>
 <span class="n">REDIS_PORT_NUMBER</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"REDIS_PORT_NUMBER"</span><span class="p">,</span> <span class="mi">6379</span><span class="p">))</span>
 <span class="n">OPC_IP_ADDRESS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"OPC_IP_ADDRESS"</span><span class="p">,</span> <span class="s2">"0.0.0.0"</span><span class="p">)</span>
 <span class="n">OPC_PORT_NUMBER</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"OPC_PORT_NUMBER"</span><span class="p">,</span> <span class="mi">4841</span><span class="p">))</span>
@@ -1202,7 +1202,7 @@ onlinereference_channel_1
 <tbody>
 <tr>
 <td>REDIS_IP_ADDRESS</td>
-<td>10.20.20.11</td>
+<td>localhost (redisserver inside Docker Compose)</td>
 <td>Redis host IP</td>
 </tr>
 <tr>
@@ -1290,18 +1290,15 @@ python<span class="w"> </span>-m<span class="w"> </span>parselibrary.opcua_serve
 <span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">"python"</span><span class="p">,</span><span class="w"> </span><span class="s2">"-m"</span><span class="p">,</span><span class="w"> </span><span class="s2">"parselibrary.opcua_server"</span><span class="p">]</span>
 </code></pre></div>
 <h4 id="publishing-data-to-redis">Publishing Data to Redis<a class="headerlink" href="#publishing-data-to-redis" title="Permanent link">&para;</a></h4>
+<p><code>opcua_loop</code> only reads from Redis — it never touches the network. Any process that writes a 201-element JSON float array to a <code>{datatype}_{channel}</code> key (see <a href="../udp-parser/"><code>udp_parser.main_loop</code></a>) will have it picked up on the next 1-second poll:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">redis</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">parselibrary.parsing_spectra</span><span class="w"> </span><span class="kn">import</span> <span class="n">parsebinary</span>
 
-<span class="c1"># Parse spectrum</span>
-<span class="n">spectrum</span> <span class="o">=</span> <span class="n">parsebinary</span><span class="p">(</span><span class="s2">"/data/sample.bin"</span><span class="p">)</span>
-
-<span class="c1"># Connect to Redis</span>
 <span class="n">r</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">(</span><span class="n">decode_responses</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="c1"># Publish to Redis for OPC UA server to read</span>
-<span class="n">r</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"transmission_channel_1"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)))</span>
+<span class="c1"># Publish 201 synthetic values for OPC UA server to pick up</span>
+<span class="n">spectrum</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">201</span>
+<span class="n">r</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"transmission_channel_1"</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">spectrum</span><span class="p">),</span> <span class="n">ex</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="c1"># Server will pick this up in next polling cycle (~1 second)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Spectrum published"</span><span class="p">)</span>
@@ -1337,15 +1334,15 @@ python<span class="w"> </span>-m<span class="w"> </span>parselibrary.opcua_serve
 </code></pre></div>
 <h3 id="performance-characteristics">Performance Characteristics<a class="headerlink" href="#performance-characteristics" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Polling latency:</strong> ~1 second (configurable in source code, line 106)</li>
+<li><strong>Polling latency:</strong> ~1 second (the <code>asyncio.sleep(1.0)</code> at the end of the polling loop)</li>
 <li><strong>OPC UA update frequency:</strong> 1 Hz</li>
 <li><strong>Redis scan time:</strong> ~5-50 ms per poll (depends on key count)</li>
 <li><strong>Memory overhead:</strong> ~5 MB for 2 channels × 5 datatypes × 201 values</li>
 <li><strong>Max concurrent clients:</strong> 10-50 (asyncio limited)</li>
 </ul>
 <h3 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">&para;</a></h3>
-<p>Events are logged at level WARNING (configured in source):</p>
-<div class="highlight"><pre><span></span><code><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+<p>Events are logged at level INFO by default (configured in source):</p>
+<div class="highlight"><pre><span></span><code><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 </code></pre></div>
 <p>Change level for more verbose output:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -1353,7 +1350,8 @@ python<span class="w"> </span>-m<span class="w"> </span>parselibrary.opcua_serve
 </code></pre></div>
 <h3 id="related-functions">Related Functions<a class="headerlink" href="#related-functions" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a href="../parsing-spectra/"><code>parsing_spectra.parsebinary()</code></a> — Parse spectrum files for storage in Redis</li>
+<li><a href="../udp-parser/"><code>udp_parser.main_loop()</code></a> — Writes the Redis keys this function reads</li>
+<li><a href="../watchdog/"><code>spectrouv_helper.watchdog_cycle()</code></a> — Monitors the same Redis data for staleness</li>
 </ul>
 <h3 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h3>
 <ul>
