@@ -1,0 +1,42 @@
+version: 2
+updates:
+  # Python runtime + dev dependencies (requirements.txt, requirements-dev.txt)
+  - package-ecosystem: "pip"
+    directory: "/"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "python"
+
+  # GitHub Actions versions used in .github/workflows/*.yml
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "ci"
+
+  # Base image in app/Dockerfile (python:3.11-alpine)
+  - package-ecosystem: "docker"
+    directory: "/app"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  # Image references in compose.yaml (redis:7-alpine)
+  - package-ecosystem: "docker"
+    directory: "/"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
