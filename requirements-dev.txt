@@ -1,2 +1,2 @@
-﻿# Development dependencies (not needed at runtime)
-pytest>=8.0
+# Development dependencies (not needed at runtime)
+pytest>=9.1.1
