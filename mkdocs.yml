@@ -2,8 +2,8 @@ site_name: BioPAT® Spectro UV Documentation
 site_description: Documentation for the BioPAT Spectro UV 201-wavelength data acquisition and OPC UA server system
 site_author: Joel Baarbe
 
-repo_url: https://github.com/Sir-Narwhal/biopat-spectrouv-server-1
-repo_name: biopat-spectrouv-server-1
+repo_url: https://github.com/Sir-Narwhal/biopat-spectrouv-server
+repo_name: biopat-spectrouv-server
 
 theme:
   name: material

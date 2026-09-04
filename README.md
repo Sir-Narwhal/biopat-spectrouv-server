@@ -58,8 +58,8 @@ Each spectrometer channel exposes 201 floating-point values corresponding to eac
 ### 1. Clone & Start the Stack
 
 ```bash
-git clone https://github.com/Sir-Narwhal/biopat-spectrouv-server-1.git
-cd biopat-spectrouv-server-1
+git clone https://github.com/Sir-Narwhal/biopat-spectrouv-server.git
+cd biopat-spectrouv-server
 
 # Start Redis, UDP Parser, OPC UA Server, and the Watchdog
 docker compose up -d
@@ -90,6 +90,18 @@ opc.tcp://localhost:4841
 ```
 
 Browse to `Root -> Objects -> spectrouv_1` to view live 201-point arrays updating in real time!
+
+### 4. Install MPT Guardian (Required Once You Move Past a Demo)
+
+The steps above are enough for a quick test with mock data. The moment you connect a **real** spectrometer for anything longer than a short trial, install [MPT Guardian](tray_app/README.md) on the same Windows PC as the Docker stack — run the installer (`MPTGuardianInstaller/Release/setup.exe`) or just launch `MPTGuardian/bin/Release/MPT Guardian.exe` directly, no build required.
+
+> [!CAUTION]
+> **Read this before you rely on MPT Guardian for anything — it is not optional and it is easy to accidentally break.**
+>
+> - **It is mandatory for any measurement session longer than ~6 hours.** tec5 tecSaaS MPT intermittently stops transmitting UDP data on its own during long runs, and MPT Guardian is the *only* thing that detects and restarts it. Without it, a long-running deployment will silently go stale with no automatic recovery.
+> - **It will not work headless.** MPT Guardian uses **Windows UI Automation** to control the tecSaaS MPT desktop application, so tecSaaS MPT must be **running and visible on the Windows desktop session** the whole time. It will **not** work in a headless session or a minimized/disconnected RDP session without additional configuration — and if that condition silently breaks mid-run, MPT Guardian keeps running but can no longer actually recover a stalled session, defeating the entire point above.
+>
+> Verify both conditions hold for your actual deployment (not just your test setup) before trusting this for a production run. See [tray_app/README.md](tray_app/README.md) for full details.
 
 ---
 
@@ -146,7 +158,11 @@ The recommended deployment runs this entire stack (via Docker Desktop) on the sa
 1. In the tec5 / tecSaaS MPT configuration, configure UDP broadcast transmission to target `127.0.0.1` (loopback) on port `20202`, since `udpparser` runs on this same PC. If you're instead running the Docker stack on a separate host, target that host's IP on the same subnet.
 2. Install [MPT Guardian](tray_app/README.md) on this same PC — either via the installer or by running the included `.exe` directly, no build step required — so it can automatically monitor and restart the tec5 MPT measurement session in the background.
 
-> **Sessions longer than ~6 hours require MPT Guardian.** The tec5 tecSaaS MPT software intermittently stops transmitting UDP data on its own during extended runs. Without MPT Guardian running on the spectrometer PC to catch and restart it, a long-running deployment will silently go stale with no automatic recovery. It's optional for short test/demo sessions only.
+> [!IMPORTANT]
+> **Sessions longer than ~6 hours require MPT Guardian.** The tec5 tecSaaS MPT software intermittently stops transmitting UDP data on its own during extended runs. Without MPT Guardian running to catch and restart it, a long-running deployment will silently go stale with no automatic recovery. It's optional for short test/demo sessions only.
+
+> [!CAUTION]
+> **MPT Guardian will not work headless.** It drives tecSaaS MPT using **Windows UI Automation**, which means tecSaaS MPT must be **running and visible on the Windows desktop session** at all times — MPT Guardian will **not** work in a headless session or a minimized/disconnected RDP session without additional configuration. This isn't a minor caveat: if it silently breaks, MPT Guardian keeps running but loses the ability to actually recover a stalled session, which quietly defeats the mandatory 6-hour protection above. See [tray_app/README.md](tray_app/README.md#limitations--notes) for details.
 
 ---
 

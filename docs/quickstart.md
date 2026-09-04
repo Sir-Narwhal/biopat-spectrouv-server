@@ -7,8 +7,8 @@ Get the BioPAT® Spectro UV Server running and publishing live 201-wavelength da
 ## 1. Start the Docker Stack
 
 ```bash
-git clone https://github.com/Sir-Narwhal/biopat-spectrouv-server-1.git
-cd biopat-spectrouv-server-1
+git clone https://github.com/Sir-Narwhal/biopat-spectrouv-server.git
+cd biopat-spectrouv-server
 
 docker compose up -d
 ```

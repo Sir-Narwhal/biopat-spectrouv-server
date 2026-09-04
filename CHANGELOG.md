@@ -37,5 +37,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Absorbance | 9 | Optical absorbance (AU) |
 | Calibration | 11 | Dark/factory calibration |
 
-[Unreleased]: https://github.com/Sir-Narwhal/biopat-spectrouv-server-1/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/Sir-Narwhal/biopat-spectrouv-server-1/releases/tag/v1.0.0
+[Unreleased]: https://github.com/Sir-Narwhal/biopat-spectrouv-server/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Sir-Narwhal/biopat-spectrouv-server/releases/tag/v1.0.0

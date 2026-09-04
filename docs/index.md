@@ -32,8 +32,8 @@ In industrial biomanufacturing and laboratory bioprocess monitoring, UV-Vis spec
 
 ```bash
 # Clone and start the stack
-git clone https://github.com/Sir-Narwhal/biopat-spectrouv-server-1.git
-cd biopat-spectrouv-server-1
+git clone https://github.com/Sir-Narwhal/biopat-spectrouv-server.git
+cd biopat-spectrouv-server
 docker compose up -d
 
 # Run simulated spectra test

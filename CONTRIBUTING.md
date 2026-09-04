@@ -25,7 +25,7 @@ This project follows the [Contributor Covenant](https://www.contributor-covenant
 
 ## Reporting Bugs
 
-Please open a [GitHub Issue](https://github.com/Sir-Narwhal/biopat-spectrouv-server-1/issues) and include:
+Please open a [GitHub Issue](https://github.com/Sir-Narwhal/biopat-spectrouv-server/issues) and include:
 
 - **Environment**: OS, Python version, Docker version, spectrometer model (if applicable)
 - **Steps to reproduce** the problem
@@ -56,7 +56,7 @@ Open a GitHub Issue with the label enhancement. Describe:
 
 ```bash
 git clone <https://github.com/Sir-Narwhal/biopat-spectrouv-server.git>
-cd biopat-spectrouv-server-1
+cd biopat-spectrouv-server
 
 # Create a virtual environment
 
@@ -162,4 +162,4 @@ same batch loop, reducing latency for dual-spectrometer setups.
 
 ## Questions?
 
-Open an issue or start a [GitHub Discussion](https://github.com/Sir-Narwhal/biopat-spectrouv-server-1/discussions) — we are happy to help.
+Open an issue or start a [GitHub Discussion](https://github.com/Sir-Narwhal/biopat-spectrouv-server/discussions) — we are happy to help.
