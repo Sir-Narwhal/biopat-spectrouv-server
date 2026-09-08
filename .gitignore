@@ -30,6 +30,9 @@ site/
 *.sln.docstates
 *.msi
 
+# Built MPT Guardian installer output — distributed via GitHub Releases, not committed
+tray_app/src/MPTGuardianInstaller/Release/
+
 # Local runtime data & credentials
 .env
 *.env

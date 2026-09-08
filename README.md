@@ -1,5 +1,6 @@
 # BioPAT® Spectro UV Server
 
+[![CI](https://github.com/Sir-Narwhal/biopat-spectrouv-server/actions/workflows/ci.yml/badge.svg)](https://github.com/Sir-Narwhal/biopat-spectrouv-server/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
 [![Docker: Ready](https://img.shields.io/badge/Docker-Compose-blue.svg)](compose.yaml)
@@ -93,7 +94,7 @@ Browse to `Root -> Objects -> spectrouv_1` to view live 201-point arrays updatin
 
 ### 4. Install MPT Guardian (Required Once You Move Past a Demo)
 
-The steps above are enough for a quick test with mock data. The moment you connect a **real** spectrometer for anything longer than a short trial, install [MPT Guardian](tray_app/README.md) on the same Windows PC as the Docker stack — run the installer (`MPTGuardianInstaller/Release/setup.exe`) or just launch `MPTGuardian/bin/Release/MPT Guardian.exe` directly, no build required.
+The steps above are enough for a quick test with mock data. The moment you connect a **real** spectrometer for anything longer than a short trial, install [MPT Guardian](tray_app/README.md) on the same Windows PC as the Docker stack — download the installer or standalone `.exe` from the [Releases page](https://github.com/Sir-Narwhal/biopat-spectrouv-server/releases) (no build required) and see [Installing MPT Guardian](tray_app/README.md#installing-mpt-guardian) for details.
 
 > [!CAUTION]
 > **Read this before you rely on MPT Guardian for anything — it is not optional and it is easy to accidentally break.**
@@ -156,7 +157,7 @@ cp .env.example .env
 The recommended deployment runs this entire stack (via Docker Desktop) on the same Windows PC that runs the tec5 tecSaaS MPT software and is physically connected to the spectrometer — see [MPT Guardian's architecture note](tray_app/README.md#architecture) for why. Only the OPC UA port needs to be reachable from elsewhere on the network.
 
 1. In the tec5 / tecSaaS MPT configuration, configure UDP broadcast transmission to target `127.0.0.1` (loopback) on port `20202`, since `udpparser` runs on this same PC. If you're instead running the Docker stack on a separate host, target that host's IP on the same subnet.
-2. Install [MPT Guardian](tray_app/README.md) on this same PC — either via the installer or by running the included `.exe` directly, no build step required — so it can automatically monitor and restart the tec5 MPT measurement session in the background.
+2. Install [MPT Guardian](tray_app/README.md) on this same PC — download the installer or standalone `.exe` from the [Releases page](https://github.com/Sir-Narwhal/biopat-spectrouv-server/releases), no build step required — so it can automatically monitor and restart the tec5 MPT measurement session in the background.
 
 > [!IMPORTANT]
 > **Sessions longer than ~6 hours require MPT Guardian.** The tec5 tecSaaS MPT software intermittently stops transmitting UDP data on its own during extended runs. Without MPT Guardian running to catch and restart it, a long-running deployment will silently go stale with no automatic recovery. It's optional for short test/demo sessions only.

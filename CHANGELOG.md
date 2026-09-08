@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- GitHub PR template (`.github/PULL_REQUEST_TEMPLATE.md`) and issue templates (`.github/ISSUE_TEMPLATE/`) for bug reports and feature requests.
+- CI status badge in README.md.
+
+### Changed
+
+- MPT Guardian's installer (`setup.exe`, `install_MPTGuardian_v1.0.0.msi`) and standalone `.exe` are now distributed as GitHub Release assets instead of being committed to the repository. README.md and tray_app/README.md now link to the Releases page.
+- Bumped `deploy-docs.yml` workflow actions (`actions/checkout` to v4, `actions/setup-python` to v5, `peaceiris/actions-gh-pages` to v4) to match versions already used in `ci.yml`.
+
 ---
 
 ## [1.0.0] - 2026-09-03
