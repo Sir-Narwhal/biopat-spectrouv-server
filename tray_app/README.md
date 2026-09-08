@@ -76,10 +76,10 @@ The tray application reads and writes the following Redis keys:
 
 ## Installing MPT Guardian
 
-There are two ways to get MPT Guardian running on the Windows spectrometer PC — pick whichever fits your deployment:
+Pre-built binaries are published as assets on the [GitHub Releases page](https://github.com/Sir-Narwhal/biopat-spectrouv-server/releases) (matching the corresponding server version) rather than committed to the repository. There are two ways to get MPT Guardian running on the Windows spectrometer PC — pick whichever fits your deployment:
 
-1. **Run the installer** — `MPTGuardianInstaller/Release/setup.exe` (backed by `install_MPTGuardian_v1.0.0.msi`) performs a normal Windows install: it registers the app, adds an uninstall entry, and is the recommended option for a permanent, production spectrometer PC.
-2. **Run the standalone `.exe` directly** — `MPTGuardian/bin/Release/MPT Guardian.exe` can be copied to the spectrometer PC and run as-is, with no installation step. This is the quickest option for a test PC or a one-off long run, since it needs no admin rights and leaves nothing behind when you delete the folder.
+1. **Run the installer** — download `setup.exe` and `install_MPTGuardian_v1.0.0.msi` from the release assets into the same folder and run `setup.exe`. It performs a normal Windows install: registers the app, adds an uninstall entry, and is the recommended option for a permanent, production spectrometer PC.
+2. **Run the standalone `.exe` directly** — download `MPT_Guardian.exe` from the release assets (renamed with an underscore in place of the space in `MPT Guardian.exe`, since GitHub release assets can't contain spaces) and copy it to the spectrometer PC to run as-is, with no installation step. This is the quickest option for a test PC or a one-off long run, since it needs no admin rights and leaves nothing behind when you delete the folder.
 
 Either way, MPT Guardian must be running (and left running) for the full duration of any measurement session over ~6 hours — see the note above.
 
@@ -114,4 +114,4 @@ The tray icon tooltip shows the current measurement state:
 
 - This component uses **Windows UI Automation** to control the tecSaaS MPT desktop application. It requires MPT to be running and visible on the Windows desktop session — it will not work in a headless/RDP-minimized session without additional configuration.
 - This component is **independent** of the Docker stack. The Docker OPC UA server will start and run correctly without it — but on a session longer than ~6 hours, the spectrometer feed itself will silently die without it (see the mandatory-use note above).
-- Full C# source is provided for transparency and auditing. A pre-built `.exe` and installer are also provided (see [Installing MPT Guardian](#installing-mpt-guardian)) so the tray app can be deployed without a Visual Studio toolchain on the spectrometer PC.
+- Full C# source is provided for transparency and auditing. Pre-built `.exe` and installer binaries are published on the [Releases page](https://github.com/Sir-Narwhal/biopat-spectrouv-server/releases) (see [Installing MPT Guardian](#installing-mpt-guardian)) so the tray app can be deployed without a Visual Studio toolchain on the spectrometer PC.
