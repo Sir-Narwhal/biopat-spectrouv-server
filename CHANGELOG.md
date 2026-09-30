@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.0.1] - 2026-09-30
+
 ### Added
 
 - GitHub PR template (`.github/PULL_REQUEST_TEMPLATE.md`) and issue templates (`.github/ISSUE_TEMPLATE/`) for bug reports and feature requests.
@@ -16,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- MPT Guardian's installer (`setup.exe`, `install_MPTGuardian_v1.0.0.msi`) and standalone `.exe` are now distributed as GitHub Release assets instead of being committed to the repository. README.md and tray_app/README.md now link to the Releases page.
+- MPT Guardian's installer (`setup.exe`, `install_MPTGuardian_v1.0.0.msi`) and standalone `.exe` are now distributed as GitHub Release assets instead of being committed to the repository. README.md and tray_app/README.md now link to the Releases page. These binaries are unchanged from v1.0.0 (the tray app itself was not modified) and are re-attached to this release so they're available from the latest release, not just v1.0.0.
 - Bumped `deploy-docs.yml` workflow actions (`actions/checkout` to v4, `actions/setup-python` to v5, `peaceiris/actions-gh-pages` to v4) to match versions already used in `ci.yml`.
 
 ---
@@ -47,5 +51,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Absorbance | 9 | Optical absorbance (AU) |
 | Calibration | 11 | Dark/factory calibration |
 
-[Unreleased]: https://github.com/Sir-Narwhal/biopat-spectrouv-server/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Sir-Narwhal/biopat-spectrouv-server/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/Sir-Narwhal/biopat-spectrouv-server/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Sir-Narwhal/biopat-spectrouv-server/releases/tag/v1.0.0
