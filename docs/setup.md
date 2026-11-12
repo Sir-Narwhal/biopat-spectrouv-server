@@ -67,6 +67,31 @@ MPT Guardian must run on the **same Windows PC** as the tec5 tecSaaS MPT softwar
 
 ---
 
+## Offline / Air-Gapped Deployment
+
+If the Windows PC can't reach Docker Hub (for example a locked-down lab PC), **don't build on it** — `docker compose up --build` has to download base images and Python packages, and fails with errors like `lookup registry-1.docker.io: no such host`. Instead, build once on a machine with internet access, export the images to `.tar` files, and load them on the offline PC.
+
+**On a machine with internet and Docker running:**
+
+```bat
+export-docker-images.bat          rem or: export-docker-images.bat 1.0.1
+```
+
+This builds the `udpparser`, `opcserver` and `udphelper` images from `app/Dockerfile`, pulls `redis:7-alpine`, and saves each as a `.tar` in `dist\docker-images\`.
+
+**On the offline PC** (copy the `dist\docker-images` folder and the repo, including `compose.offline.yaml`, across):
+
+```bat
+import-docker-images.bat           rem loads every .tar with "docker load"
+run-docker-offline.bat             rem or: run-docker-offline.bat 1.0.1
+```
+
+`run-docker-offline.bat` starts the stack from `compose.offline.yaml`, which uses the loaded images (`pull_policy: never`) and never builds or pulls. The image tag must match the one used when exporting (`latest` if you didn't pass one). Use this instead of `run-docker.bat` on the offline PC.
+
+> `compose.offline.yaml` mirrors the service settings in `compose.yaml` — keep the two in sync when changing ports, environment variables, or services.
+
+---
+
 ## Port Mappings
 
 Ensure the following firewall ports are open on the server host:
