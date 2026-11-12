@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -594,6 +594,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#offline-air-gapped-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Offline / Air-Gapped Deployment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#port-mappings" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -907,6 +918,21 @@ docker<span class="w"> </span>compose<span class="w"> </span>down
 <p>The <a href="../tray_app/README.md">MPT Guardian tray application</a> is optional for short test sessions, but <strong>mandatory for any measurement session longer than ~6 hours</strong> — the tec5 tecSaaS MPT software intermittently stops transmitting UDP data on its own over extended runs, and MPT Guardian is what detects and restarts it. Install it via the installer, or run the included <code>.exe</code> directly with no build/install step.</p>
 <p>MPT Guardian must run on the <strong>same Windows PC</strong> as the tec5 tecSaaS MPT software and this Docker Compose stack — it talks to <code>redisserver</code> over <code>localhost</code> and drives tecSaaS MPT via Windows UI Automation on the same desktop session, so it can't be split off onto a separate machine. In practice this means: when MPT Guardian is in use, deploy the whole stack via Docker Desktop on that same PC rather than on a separate Linux host.</p>
 <hr />
+<h2 id="offline-air-gapped-deployment">Offline / Air-Gapped Deployment<a class="headerlink" href="#offline-air-gapped-deployment" title="Permanent link">&para;</a></h2>
+<p>If the Windows PC can't reach Docker Hub (for example a locked-down lab PC), <strong>don't build on it</strong> — <code>docker compose up --build</code> has to download base images and Python packages, and fails with errors like <code>lookup registry-1.docker.io: no such host</code>. Instead, build once on a machine with internet access, export the images to <code>.tar</code> files, and load them on the offline PC.</p>
+<p><strong>On a machine with internet and Docker running:</strong></p>
+<div class="highlight"><pre><span></span><code>export-docker-images.bat          rem or: export-docker-images.bat 1.0.1
+</code></pre></div>
+<p>This builds the <code>udpparser</code>, <code>opcserver</code> and <code>udphelper</code> images from <code>app/Dockerfile</code>, pulls <code>redis:7-alpine</code>, and saves each as a <code>.tar</code> in <code>dist\docker-images\</code>.</p>
+<p><strong>On the offline PC</strong> (copy the <code>dist\docker-images</code> folder and the repo, including <code>compose.offline.yaml</code>, across):</p>
+<div class="highlight"><pre><span></span><code>import-docker-images.bat           rem loads every .tar with <span class="s2">"docker load"</span>
+run-docker-offline.bat             rem or: run-docker-offline.bat 1.0.1
+</code></pre></div>
+<p><code>run-docker-offline.bat</code> starts the stack from <code>compose.offline.yaml</code>, which uses the loaded images (<code>pull_policy: never</code>) and never builds or pulls. The image tag must match the one used when exporting (<code>latest</code> if you didn't pass one). Use this instead of <code>run-docker.bat</code> on the offline PC.</p>
+<blockquote>
+<p><code>compose.offline.yaml</code> mirrors the service settings in <code>compose.yaml</code> — keep the two in sync when changing ports, environment variables, or services.</p>
+</blockquote>
+<hr />
 <h2 id="port-mappings">Port Mappings<a class="headerlink" href="#port-mappings" title="Permanent link">&para;</a></h2>
 <p>Ensure the following firewall ports are open on the server host:</p>
 <table>
@@ -995,10 +1021,10 @@ docker<span class="w"> </span>compose<span class="w"> </span>down
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.sections", "navigation.top", "toc.integrate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["search.suggest", "search.highlight", "navigation.tabs", "navigation.sections", "navigation.top", "toc.integrate"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
