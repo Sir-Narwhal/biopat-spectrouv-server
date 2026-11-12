@@ -1,4 +1,4 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+
+## [1.1.0](https://github.com/Sir-Narwhal/biopat-spectrouv-server/compare/v1.0.1...v1.1.0) (2026-11-12)
+
+
+### Features
+
+* support offline deployment from exported Docker image archives ([#26](https://github.com/Sir-Narwhal/biopat-spectrouv-server/issues/26)) ([b88a347](https://github.com/Sir-Narwhal/biopat-spectrouv-server/commit/b88a34737b869bcc9d7b5af2eb719060af568819))
 
 ## [Unreleased]
 
