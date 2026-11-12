@@ -129,3 +129,12 @@ If port `4841` (OPC UA) or `20202` (UDP) is already in use by another applicatio
    ```bash
    docker compose exec redisserver redis-cli get absorbance_channel_2
    ```
+
+---
+
+### 7. Build Fails With `no such host` / Can't Reach Docker Hub
+
+#### Error: `failed to resolve source metadata for docker.io/...` / `lookup registry-1.docker.io: no such host`
+**Cause:** `docker compose up --build` (and `run-docker.bat`) need internet access to pull the base images and install Python packages. A PC with no internet or blocked DNS can't build.
+
+**Solution:** build on a machine that has internet, export the images, and run them on the offline PC without building — see [Offline / Air-Gapped Deployment](setup.md#offline-air-gapped-deployment). If the PC *should* have internet, check DNS (`nslookup registry-1.docker.io`) and any proxy settings in Docker Desktop instead.
