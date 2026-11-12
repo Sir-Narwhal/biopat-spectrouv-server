@@ -14,6 +14,7 @@ Thank you for your interest in contributing! This project welcomes bug reports, 
 - [Submitting a Pull Request](#submitting-a-pull-request)
 - [Code Style](#code-style)
 - [Commit Message Convention](#commit-message-convention)
+- [Release Automation](#release-automation)
 
 ---
 
@@ -157,6 +158,22 @@ feat(udp-parser): add support for dual-channel simultaneous ingestion
 Extends collect_mpt_spectra to process channel_2 datagrams in the
 same batch loop, reducing latency for dual-spectrometer setups.
 ```
+
+---
+
+## Release Automation
+
+The `release-please` workflow uses `GITHUB_TOKEN` to create release pull requests.
+In addition to the workflow's `contents: write` and `pull-requests: write`
+permissions, a repository administrator must enable **Allow GitHub Actions to
+create and approve pull requests** under **Settings → Actions → General →
+Workflow permissions**, then save. This setting applies to Actions workflows
+across the repository; an organization or enterprise policy may prevent changing it.
+See [GitHub's Actions settings documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#preventing-github-actions-from-creating-or-approving-pull-requests).
+
+If a run failed because Actions could not create a pull request, rerun the
+failed job after enabling the setting and verify that the release pull request
+is created. The workflow may already have updated its release branch.
 
 ---
 
